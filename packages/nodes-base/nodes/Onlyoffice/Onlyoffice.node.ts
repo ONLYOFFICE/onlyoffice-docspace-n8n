@@ -259,8 +259,8 @@ export class Onlyoffice implements INodeType {
 		icon: 'file:onlyoffice.svg',
 		iconColor: 'orange',
 		group: ['input'],
-		description: '-',
-		subtitle: '-',
+		description: 'Consume ONLYOFFICE DocSpace API',
+		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		usableAsTool: true,
 		version: [1],
 		defaults: {
@@ -314,12 +314,20 @@ export class Onlyoffice implements INodeType {
 						value: 'file',
 					},
 					{
+						name: 'File or Folder',
+						value: 'fileOrFolder',
+					},
+					{
 						name: 'Folder',
 						value: 'folder',
 					},
 					{
 						name: 'Room',
 						value: 'room',
+					},
+					{
+						name: 'User',
+						value: 'user',
 					},
 				],
 				noDataExpression: true,
@@ -355,14 +363,14 @@ export class Onlyoffice implements INodeType {
 						action: 'Download a file',
 					},
 					{
-						name: 'Download File as Text',
-						value: 'downloadFileAsText',
-						action: 'Download a file as text',
-					},
-					{
 						name: 'Get File Info',
 						value: 'getFileInfo',
 						action: 'Get file info',
+					},
+					{
+						name: 'Get File Primary External Link',
+						value: 'getFilePrimaryExternalLink',
+						action: 'Get the primary external link of a file',
 					},
 					{
 						name: 'Update File',
@@ -373,6 +381,34 @@ export class Onlyoffice implements INodeType {
 						name: 'Upload File',
 						value: 'uploadFile',
 						action: 'Upload a file',
+					},
+				],
+				noDataExpression: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                           fileOrFolder:operations                          */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				default: 'copyFileOrFolder',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+					},
+				},
+				options: [
+					{
+						name: 'Copy File or Folder',
+						value: 'copyFileOrFolder',
+						action: 'Copy a file or folder',
+					},
+					{
+						name: 'Move File or Folder',
+						value: 'moveFileOrFolder',
+						action: 'Move a file or folder',
 					},
 				],
 				noDataExpression: true,
@@ -413,19 +449,19 @@ export class Onlyoffice implements INodeType {
 						action: 'Get folder info',
 					},
 					{
+						name: 'Get Folder Primary External Link',
+						value: 'getFolderPrimaryExternalLink',
+						action: 'Get the primary external link of a folder',
+					},
+					{
 						name: 'Get Folders',
 						value: 'getFolders',
 						action: 'Get folders',
 					},
 					{
-						name: 'Get My Folder',
-						value: 'getMyFolder',
-						action: 'Get my folder',
-					},
-					{
-						name: 'Rename Folder',
-						value: 'renameFolder',
-						action: 'Rename a folder',
+						name: 'Update Folder',
+						value: 'updateFolder',
+						action: 'Update a folder',
 					},
 				],
 				noDataExpression: true,
@@ -461,6 +497,11 @@ export class Onlyoffice implements INodeType {
 						action: 'Get room info',
 					},
 					{
+						name: 'Get Room Primary External Link',
+						value: 'getRoomsPrimaryExternalLink',
+						action: 'Get the primary external link of a room',
+					},
+					{
 						name: 'Get Room Security Info',
 						value: 'getRoomSecurityInfo',
 						action: 'Get room security info',
@@ -485,8 +526,65 @@ export class Onlyoffice implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
+			/*                               user:operations                              */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				default: 'getUser',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+					},
+				},
+				options: [
+					{
+						name: 'Delete User',
+						value: 'deleteUser',
+						action: 'Delete a user',
+					},
+					{
+						name: 'Get User',
+						value: 'getUser',
+						action: 'Get a user',
+					},
+					{
+						name: 'Invite User',
+						value: 'inviteUser',
+						action: 'Invite a user',
+					},
+					{
+						name: 'Search User',
+						value: 'searchUser',
+						action: 'Search a user',
+					},
+					{
+						name: 'Update User',
+						value: 'updateUser',
+						action: 'Update a user',
+					},
+				],
+				noDataExpression: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
 			/*                               file:createFile                              */
 			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'In My Documents',
+				name: 'isMyDocuments',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to create the file in the "My documents" section',
+				displayOptions: {
+					show: {
+						resource: ['file'],
+						operation: ['createFile'],
+					},
+				},
+				required: true,
+			},
 			{
 				displayName: 'ID',
 				name: 'id',
@@ -495,6 +593,7 @@ export class Onlyoffice implements INodeType {
 				description: 'The ID of the folder to create the file in',
 				displayOptions: {
 					show: {
+						isMyDocuments: [false],
 						resource: ['file'],
 						operation: ['createFile'],
 					},
@@ -551,6 +650,56 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
+				displayName: 'As Text',
+				name: 'asText',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to download the file as text',
+				hint: 'Download the file as ".csv" or ".txt", depending on the original format',
+				displayOptions: {
+					show: {
+						resource: ['file'],
+						operation: ['downloadFile'],
+					},
+				},
+				required: true,
+			},
+			{
+				displayName: 'Output Format',
+				name: 'outputFormat',
+				type: 'resourceLocator',
+				default: {
+					mode: 'list',
+					value: '',
+				},
+				description: 'The format to download the file in',
+				hint: 'Leave empty to use the original format of the file',
+				displayOptions: {
+					show: {
+						asText: [false],
+						resource: ['file'],
+						operation: ['downloadFile'],
+					},
+				},
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: 'Select a format...',
+						typeOptions: {
+							searchable: true,
+							searchListMethod: 'listConvertible',
+						},
+					},
+					{
+						displayName: 'Manual',
+						name: 'manual',
+						type: 'string',
+					},
+				],
+			},
+			{
 				displayName: 'Put Output File in Field',
 				name: 'binaryPropertyName',
 				type: 'string',
@@ -560,38 +709,6 @@ export class Onlyoffice implements INodeType {
 					show: {
 						resource: ['file'],
 						operation: ['downloadFile'],
-					},
-				},
-				required: true,
-			},
-
-			/* -------------------------------------------------------------------------- */
-			/*                           file:downloadFileAsText                          */
-			/* -------------------------------------------------------------------------- */
-			{
-				displayName: 'ID',
-				name: 'id',
-				type: 'number',
-				default: 0,
-				description: 'The ID of the file to download as text',
-				displayOptions: {
-					show: {
-						resource: ['file'],
-						operation: ['downloadFileAsText'],
-					},
-				},
-				required: true,
-			},
-			{
-				displayName: 'Put Output File in Field',
-				name: 'binaryPropertyName',
-				type: 'string',
-				default: 'data',
-				hint: 'The name of the output binary field to put the file in',
-				displayOptions: {
-					show: {
-						resource: ['file'],
-						operation: ['downloadFileAsText'],
 					},
 				},
 				required: true,
@@ -616,6 +733,24 @@ export class Onlyoffice implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
+			/*                       file:getFilePrimaryExternalLink                      */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'number',
+				default: 0,
+				description: 'The ID of the file to get the primary external link for',
+				displayOptions: {
+					show: {
+						resource: ['file'],
+						operation: ['getFilePrimaryExternalLink'],
+					},
+				},
+				required: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
 			/*                               file:updateFile                              */
 			/* -------------------------------------------------------------------------- */
 			{
@@ -633,22 +768,44 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'Title',
-				name: 'title',
-				type: 'string',
-				default: '',
-				description: 'The new title of the file to set',
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'collection',
+				default: {},
 				displayOptions: {
 					show: {
 						resource: ['file'],
 						operation: ['updateFile'],
 					},
 				},
+				options: [
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
+						description: 'The new title of the file to set',
+					},
+				],
 			},
 
 			/* -------------------------------------------------------------------------- */
 			/*                               file:uploadFile                              */
 			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'To My Documents',
+				name: 'isMyDocuments',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to upload the file to the "My documents" section',
+				displayOptions: {
+					show: {
+						resource: ['file'],
+						operation: ['uploadFile'],
+					},
+				},
+				required: true,
+			},
 			{
 				displayName: 'ID',
 				name: 'id',
@@ -657,6 +814,7 @@ export class Onlyoffice implements INodeType {
 				description: 'The ID of the room or folder to upload the file to',
 				displayOptions: {
 					show: {
+						isMyDocuments: [false],
 						resource: ['file'],
 						operation: ['uploadFile'],
 					},
@@ -722,8 +880,156 @@ export class Onlyoffice implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
+			/*                        fileOrFolder:copyFileOrFolder                       */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'File IDs',
+				name: 'fileIds',
+				type: 'number',
+				typeOptions: {
+					multipleValues: true,
+					multipleValueButtonText: 'Add File ID',
+				},
+				default: 0,
+				description: 'The IDs of the files to copy',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+						operation: ['copyFileOrFolder'],
+					},
+				},
+			},
+			{
+				displayName: 'Folder IDs',
+				name: 'folderIds',
+				type: 'number',
+				typeOptions: {
+					multipleValues: true,
+					multipleValueButtonText: 'Add Folder ID',
+				},
+				default: 0,
+				description: 'The IDs of the folders to copy',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+						operation: ['copyFileOrFolder'],
+					},
+				},
+			},
+			{
+				displayName: 'To My Documents',
+				name: 'isMyDocuments',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to copy the file or folder to the "My documents" section',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+						operation: ['copyFileOrFolder'],
+					},
+				},
+				required: true,
+			},
+			{
+				displayName: 'Destination ID',
+				name: 'destFolderId',
+				type: 'number',
+				default: 0,
+				description: 'The ID of the folder or room to copy to',
+				displayOptions: {
+					show: {
+						isMyDocuments: [false],
+						resource: ['fileOrFolder'],
+						operation: ['copyFileOrFolder'],
+					},
+				},
+				required: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                        fileOrFolder:moveFileOrFolder                       */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'File IDs',
+				name: 'fileIds',
+				type: 'number',
+				typeOptions: {
+					multipleValues: true,
+					multipleValueButtonText: 'Add File ID',
+				},
+				default: 0,
+				description: 'The IDs of the files to move',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+						operation: ['moveFileOrFolder'],
+					},
+				},
+			},
+			{
+				displayName: 'Folder IDs',
+				name: 'folderIds',
+				type: 'number',
+				typeOptions: {
+					multipleValues: true,
+					multipleValueButtonText: 'Add Folder ID',
+				},
+				default: 0,
+				description: 'The IDs of the folders to move',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+						operation: ['moveFileOrFolder'],
+					},
+				},
+			},
+			{
+				displayName: 'To My Documents',
+				name: 'isMyDocuments',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to move the file or folder to the "My documents" section',
+				displayOptions: {
+					show: {
+						resource: ['fileOrFolder'],
+						operation: ['moveFileOrFolder'],
+					},
+				},
+				required: true,
+			},
+			{
+				displayName: 'Destination ID',
+				name: 'destFolderId',
+				type: 'number',
+				default: 0,
+				description: 'The ID of the folder or room to move to',
+				displayOptions: {
+					show: {
+						isMyDocuments: [false],
+						resource: ['fileOrFolder'],
+						operation: ['moveFileOrFolder'],
+					},
+				},
+				required: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
 			/*                             folder:createFolder                            */
 			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'In My Documents',
+				name: 'isMyDocuments',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to create the folder in the "My documents" section',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['createFolder'],
+					},
+				},
+				required: true,
+			},
 			{
 				displayName: 'ID',
 				name: 'id',
@@ -732,6 +1038,7 @@ export class Onlyoffice implements INodeType {
 				description: 'The ID of the room or folder to create the folder in',
 				displayOptions: {
 					show: {
+						isMyDocuments: [false],
 						resource: ['folder'],
 						operation: ['createFolder'],
 					},
@@ -774,6 +1081,20 @@ export class Onlyoffice implements INodeType {
 			/*                              folder:getFolder                              */
 			/* -------------------------------------------------------------------------- */
 			{
+				displayName: 'Is My Documents',
+				name: 'isMyDocuments',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to get the "My documents" section',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['getFolder'],
+					},
+				},
+				required: true,
+			},
+			{
 				displayName: 'ID',
 				name: 'id',
 				type: 'number',
@@ -781,6 +1102,7 @@ export class Onlyoffice implements INodeType {
 				description: 'The ID of the folder to get for',
 				displayOptions: {
 					show: {
+						isMyDocuments: [false],
 						resource: ['folder'],
 						operation: ['getFolder'],
 					},
@@ -817,6 +1139,24 @@ export class Onlyoffice implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
+			/*                     folder:getFolderPrimaryExternalLink                    */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'number',
+				default: 0,
+				description: 'The ID of the folder to get the primary external link for',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['getFolderPrimaryExternalLink'],
+					},
+				},
+				required: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
 			/*                              folder:getFolders                             */
 			/* -------------------------------------------------------------------------- */
 			{
@@ -835,34 +1175,42 @@ export class Onlyoffice implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
-			/*                             folder:renameFolder                            */
+			/*                             folder:updateFolder                            */
 			/* -------------------------------------------------------------------------- */
 			{
 				displayName: 'ID',
 				name: 'id',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder to rename',
+				description: 'The ID of the folder to update',
 				displayOptions: {
 					show: {
 						resource: ['folder'],
-						operation: ['renameFolder'],
+						operation: ['updateFolder'],
 					},
 				},
 				required: true,
 			},
 			{
-				displayName: 'Title',
-				name: 'title',
-				type: 'string',
-				default: '',
-				description: 'The new title of the folder to set',
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'collection',
+				default: {},
 				displayOptions: {
 					show: {
 						resource: ['folder'],
-						operation: ['renameFolder'],
+						operation: ['updateFolder'],
 					},
 				},
+				options: [
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
+						description: 'The new title of the folder to set',
+					},
+				],
 			},
 
 			/* -------------------------------------------------------------------------- */
@@ -891,6 +1239,7 @@ export class Onlyoffice implements INodeType {
 						type: 'list',
 						placeholder: 'Select a room...',
 						typeOptions: {
+							searchable: true,
 							searchListMethod: 'listRooms',
 						},
 					},
@@ -998,6 +1347,54 @@ export class Onlyoffice implements INodeType {
 						type: 'list',
 						placeholder: 'Select a room...',
 						typeOptions: {
+							searchable: true,
+							searchListMethod: 'listRooms',
+						},
+					},
+					{
+						displayName: 'Manual',
+						name: 'manual',
+						type: 'string',
+						validation: [
+							{
+								type: 'regex',
+								properties: {
+									regex: '\\d+',
+									errorMessage: 'The ID of the room must be a number',
+								},
+							},
+						],
+					},
+				],
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                      room:getRoomsPrimaryExternalLink                      */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'resourceLocator',
+				default: {
+					mode: 'list',
+					value: '',
+				},
+				description: 'The ID of the room to get the primary external link for',
+				displayOptions: {
+					show: {
+						resource: ['room'],
+						operation: ['getRoomsPrimaryExternalLink'],
+					},
+				},
+				required: true,
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: 'Select a room...',
+						typeOptions: {
+							searchable: true,
 							searchListMethod: 'listRooms',
 						},
 					},
@@ -1044,6 +1441,7 @@ export class Onlyoffice implements INodeType {
 						type: 'list',
 						placeholder: 'Select a room...',
 						typeOptions: {
+							searchable: true,
 							searchListMethod: 'listRooms',
 						},
 					},
@@ -1090,6 +1488,7 @@ export class Onlyoffice implements INodeType {
 						type: 'list',
 						placeholder: 'Select a room...',
 						typeOptions: {
+							searchable: true,
 							searchListMethod: 'listRooms',
 						},
 					},
@@ -1257,6 +1656,7 @@ export class Onlyoffice implements INodeType {
 						type: 'list',
 						placeholder: 'Select a room...',
 						typeOptions: {
+							searchable: true,
 							searchListMethod: 'listRooms',
 						},
 					},
@@ -1288,6 +1688,318 @@ export class Onlyoffice implements INodeType {
 						operation: ['updateRoom'],
 					},
 				},
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                               user:deleteUser                              */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'resourceLocator',
+				default: {
+					mode: 'list',
+					value: '',
+				},
+				description: 'The ID of the user to delete',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['deleteUser'],
+					},
+				},
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: 'Select a user...',
+						typeOptions: {
+							searchable: true,
+							searchListMethod: 'listUsers',
+						},
+					},
+					{
+						displayName: 'Manual',
+						name: 'manual',
+						type: 'string',
+					},
+				],
+				required: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                                 user:getUser                               */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'Is Me',
+				name: 'isMe',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to get the current authenticated user',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['getUser'],
+					},
+				},
+				required: true,
+			},
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'resourceLocator',
+				default: {
+					mode: 'list',
+					value: '',
+				},
+				description: 'The ID of the user to get for',
+				displayOptions: {
+					show: {
+						isMe: [false],
+						resource: ['user'],
+						operation: ['getUser'],
+					},
+				},
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: 'Select a user...',
+						typeOptions: {
+							searchable: true,
+							searchListMethod: 'listUsers',
+						},
+					},
+					{
+						displayName: 'Manual',
+						name: 'manual',
+						type: 'string',
+					},
+				],
+			},
+			{
+				displayName: 'Email',
+				name: 'email',
+				type: 'string',
+				default: '',
+				description: 'The email of the user to get for',
+				placeholder: 'name@email.com',
+				displayOptions: {
+					show: {
+						isMe: [false],
+						resource: ['user'],
+						operation: ['getUser'],
+					},
+				},
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                               user:inviteUser                              */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'Invitations',
+				name: 'invitations',
+				type: 'collection',
+				typeOptions: {
+					multipleValues: true,
+					multipleValueButtonText: 'Add Invitation',
+				},
+				default: {},
+				description: 'The invitations to perform',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['inviteUser'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						default: 4,
+						description: 'The type of the user to invite',
+						options: [
+							{
+								name: 'Room Admin',
+								value: 1,
+							},
+							{
+								name: 'DocSpace Admin',
+								value: 3,
+							},
+							{
+								name: 'User',
+								value: 4,
+							},
+						],
+					},
+					{
+						displayName: 'Email',
+						name: 'email',
+						type: 'string',
+						default: '',
+						description: 'The email of the user to invite',
+						placeholder: 'name@email.com',
+					},
+				],
+				required: true,
+			},
+			{
+				displayName: 'Culture',
+				name: 'culture',
+				type: 'resourceLocator',
+				default: {
+					mode: 'list',
+					value: '',
+				},
+				description: 'The languages to use for the invitation',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['inviteUser'],
+					},
+				},
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: 'Select a culture...',
+						typeOptions: {
+							searchable: true,
+							searchListMethod: 'listCultures',
+						},
+					},
+					{
+						displayName: 'Manual',
+						name: 'manual',
+						type: 'string',
+					},
+				],
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                               user:searchUser                              */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'Query',
+				name: 'query',
+				type: 'string',
+				default: '',
+				description: 'The query to search for',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['searchUser'],
+					},
+				},
+			},
+			{
+				...filtersProperty,
+				description: 'The filters to apply to the search',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['searchUser'],
+					},
+				},
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                               user:updateUser                              */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'ID',
+				name: 'id',
+				type: 'resourceLocator',
+				default: {
+					mode: 'list',
+					value: '',
+				},
+				description: 'The ID of the user to update',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['updateUser'],
+					},
+				},
+				modes: [
+					{
+						displayName: 'From List',
+						name: 'list',
+						type: 'list',
+						placeholder: 'Select a user...',
+						typeOptions: {
+							searchable: true,
+							searchListMethod: 'listUsers',
+						},
+					},
+					{
+						displayName: 'Manual',
+						name: 'manual',
+						type: 'string',
+					},
+				],
+				required: true,
+			},
+			{
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'collection',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['updateUser'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Status',
+						name: 'status',
+						type: 'options',
+						default: 1,
+						description: 'The status to set for the user',
+						options: [
+							{
+								name: 'Enable',
+								value: 1,
+							},
+							{
+								name: 'Disable',
+								value: 2,
+							},
+						],
+					},
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						default: 2,
+						description: 'The type to set for the user',
+						options: [
+							{
+								name: 'Room Admin',
+								value: 1,
+							},
+							{
+								name: 'Guest',
+								value: 2,
+							},
+							{
+								name: 'DocSpace Admin',
+								value: 3,
+							},
+							{
+								name: 'User',
+								value: 4,
+							},
+						],
+					},
+				],
 			},
 		],
 
@@ -1384,6 +2096,48 @@ export class Onlyoffice implements INodeType {
 				return result;
 			},
 
+			async listConvertible(
+				this: ILoadOptionsFunctions,
+				filter?: string,
+			): Promise<INodeListSearchResult> {
+				// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/SettingsController.cs#L199
+				const results: INodeListSearchItems[] = [];
+				const id = this.getNodeParameter('id', 0) as number;
+				if (!id) {
+					throw new NodeOperationError(
+						this.getNode(),
+						'The ID of the file to get convertible formats for is required',
+					);
+				}
+				const infoResponse = await docspaceJsonApiRequest.call(
+					this,
+					0,
+					'GET',
+					`api/2.0/files/file/${id}`,
+				);
+				const settingsResponse = await docspaceJsonApiRequest.call(
+					this,
+					0,
+					'GET',
+					'api/2.0/files/settings',
+				);
+				for (const item of settingsResponse.body.response.extsConvertible[
+					infoResponse.body.response.fileExst
+				]) {
+					if (!filter || (filter && item.toLowerCase().includes(filter.toLowerCase()))) {
+						const options: INodeListSearchItems = {
+							name: item,
+							value: item,
+						};
+						results.push(options);
+					}
+				}
+				const result: INodeListSearchResult = {
+					results,
+				};
+				return result;
+			},
+
 			async listCultures(
 				this: ILoadOptionsFunctions,
 				filter?: string,
@@ -1411,15 +2165,60 @@ export class Onlyoffice implements INodeType {
 				return result;
 			},
 
-			async listRooms(this: ILoadOptionsFunctions): Promise<INodeListSearchResult> {
-				// todo: adopt filter and paginationToken
+			async listRooms(
+				this: ILoadOptionsFunctions,
+				filter?: string,
+			): Promise<INodeListSearchResult> {
 				// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L649
 				const results: INodeListSearchItems[] = [];
-				const response = await docspaceJsonApiRequest.call(this, 0, 'GET', 'api/2.0/files/rooms');
+				const filters: {
+					filterValue?: string;
+				} = {};
+				if (filter) {
+					filters.filterValue = filter;
+				}
+				const response = await docspaceJsonApiRequest.call(
+					this,
+					0,
+					'GET',
+					'api/2.0/files/rooms',
+					filters,
+				);
 				for (const folder of response.body.response.folders) {
 					const options: INodeListSearchItems = {
 						name: folder.title,
 						value: folder.id,
+					};
+					results.push(options);
+				}
+				const result: INodeListSearchResult = {
+					results,
+				};
+				return result;
+			},
+
+			async listUsers(
+				this: ILoadOptionsFunctions,
+				filter?: string,
+			): Promise<INodeListSearchResult> {
+				// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L681
+				// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L880
+				const results: INodeListSearchItems[] = [];
+				let response;
+				if (filter) {
+					response = await docspaceJsonApiRequest.call(
+						this,
+						0,
+						'GET',
+						`api/2.0/people/@search/${encodeURIComponent(filter)}`,
+					);
+				} else {
+					response = await docspaceJsonApiRequest.call(this, 0, 'GET', 'api/2.0/people');
+				}
+				for (const user of response.body.response) {
+					const options: INodeListSearchItems = {
+						name: user.displayName,
+						value: user.id,
 					};
 					results.push(options);
 				}
@@ -1448,7 +2247,14 @@ export class Onlyoffice implements INodeType {
 						switch (operation) {
 							case 'createFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L198
-								const id = this.getNodeParameter('id', i) as number;
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L551
+								let id: number | string | undefined;
+								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
+								if (isMyDocuments) {
+									id = '@my';
+								} else {
+									id = this.getNodeParameter('id', i) as number;
+								}
 								const title = this.getNodeParameter('title', i) as string;
 								const body = {
 									title,
@@ -1495,48 +2301,9 @@ export class Onlyoffice implements INodeType {
 							case 'downloadFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L51
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/SettingsController.cs#L199
 								const id = this.getNodeParameter('id', i) as number;
-								const infoResponse = await docspaceJsonApiRequest.call(
-									this,
-									i,
-									'GET',
-									`api/2.0/files/file/${id}`,
-								);
-								resultDataObject = infoResponse.body;
-								const downloadBody = {
-									fileIds: [id],
-								};
-								const downloadResponse = await docspaceJsonApiRequest.call(
-									this,
-									i,
-									'PUT',
-									'api/2.0/files/fileops/bulkdownload',
-									undefined,
-									downloadBody,
-								);
-								const resolved = await docspaceResolveAsyncApiResponse.call(
-									this,
-									i,
-									downloadResponse.body,
-								);
-								const bufferResponse = await docspaceBufferApiRequest.call(
-									this,
-									i,
-									'GET',
-									resolved[0].url,
-								);
-								resultBinaryData = await this.helpers.prepareBinaryData(
-									bufferResponse.body,
-									infoResponse.body.response.title,
-									bufferResponse.headers['Content-Type'],
-								);
-								break;
-							}
-
-							case 'downloadFileAsText': {
-								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
-								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L51
-								const id = this.getNodeParameter('id', i) as number;
+								const asText = this.getNodeParameter('asText', i) as boolean;
 								const infoResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
@@ -1545,25 +2312,46 @@ export class Onlyoffice implements INodeType {
 								);
 								resultDataObject = infoResponse.body;
 								let extension: string | undefined;
-								switch (infoResponse.body.response.fileType) {
-									case 5:
-										extension = '.csv';
-										break;
-									case 6:
-									case 7:
-									case 10:
-										extension = '.txt';
-										break;
-									default:
+								if (asText) {
+									const settingsResponse = await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'GET',
+										'api/2.0/files/settings',
+									);
+									for (const item of settingsResponse.body.response.extsConvertible[
+										infoResponse.body.response.fileExst
+									]) {
+										if (item === '.csv' || item === '.txt') {
+											extension = item;
+											break;
+										}
+									}
+									if (!extension) {
 										throw new NodeOperationError(
 											this.getNode(),
-											`File type ${infoResponse.body.response.fileType} is not supported`,
+											'File could not be converted to text',
 											{ itemIndex: i },
 										);
+									}
+								} else {
+									const outputFormat = this.getNodeParameter('outputFormat', i, '', {
+										extractValue: true,
+									}) as string;
+									if (outputFormat) {
+										extension = outputFormat;
+									}
 								}
-								const downloadBody = {
-									fileConvertIds: [{ key: id, value: extension }],
-								};
+								let downloadBody;
+								if (extension) {
+									downloadBody = {
+										fileConvertIds: [{ key: id, value: extension }],
+									};
+								} else {
+									downloadBody = {
+										fileIds: [id],
+									};
+								}
 								const downloadResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
@@ -1583,24 +2371,20 @@ export class Onlyoffice implements INodeType {
 									'GET',
 									resolved[0].url,
 								);
-								const fileName = infoResponse.body.response.title.slice(
-									0,
-									-infoResponse.body.response.fileExst.length,
-								);
-								const filePath = `${fileName}${extension}`;
-								let mimeType: string | undefined;
-								switch (extension) {
-									case '.csv':
-										mimeType = 'text/csv';
-										break;
-									case '.txt':
-										mimeType = 'text/plain';
-										break;
+								let filePath: string | undefined;
+								if (extension) {
+									const fileName = infoResponse.body.response.title.slice(
+										0,
+										-infoResponse.body.response.fileExst.length,
+									);
+									filePath = `${fileName}${extension}`;
+								} else {
+									filePath = infoResponse.body.response.title;
 								}
 								resultBinaryData = await this.helpers.prepareBinaryData(
 									bufferResponse.body,
 									filePath,
-									mimeType,
+									bufferResponse.headers['Content-Type'],
 								);
 								break;
 							}
@@ -1618,12 +2402,27 @@ export class Onlyoffice implements INodeType {
 								break;
 							}
 
+							case 'getFilePrimaryExternalLink': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L445
+								const id = this.getNodeParameter('id', i) as number;
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'GET',
+									`api/2.0/files/file/${id}/link`,
+								);
+								resultDataObject = response.body;
+								break;
+							}
+
 							case 'updateFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L399
 								const id = this.getNodeParameter('id', i) as number;
-								const title = this.getNodeParameter('title', i) as string;
+								const fields = this.getNodeParameter('fields', i) as {
+									title?: string;
+								};
 								const body = {
-									title,
+									title: fields.title,
 								};
 								const response = await docspaceJsonApiRequest.call(
 									this,
@@ -1642,7 +2441,13 @@ export class Onlyoffice implements INodeType {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/UploadController.cs/#L76
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Startup.cs/#L76
 								const MAX_CHUNK_SIZE = 10 * 1024 * 1024; // 10mb
-								const id = this.getNodeParameter('id', i) as number;
+								let id: number | string | undefined;
+								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
+								if (isMyDocuments) {
+									id = '@my';
+								} else {
+									id = this.getNodeParameter('id', i) as number;
+								}
 								const sessionBody = {
 									fileName: '',
 									fileSize: 0,
@@ -1731,11 +2536,17 @@ export class Onlyoffice implements INodeType {
 						}
 					}
 
-					case 'filesFolder': {
+					case 'folder': {
 						switch (operation) {
 							case 'createFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L110
-								const id = this.getNodeParameter('id', i) as number;
+								let id: number | string | undefined;
+								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
+								if (isMyDocuments) {
+									id = '@my';
+								} else {
+									id = this.getNodeParameter('id', i) as number;
+								}
 								const title = this.getNodeParameter('title', i) as string;
 								const body = {
 									title,
@@ -1781,7 +2592,14 @@ export class Onlyoffice implements INodeType {
 
 							case 'getFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L161
-								const id = this.getNodeParameter('id', i) as number;
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
+								let id: number | string | undefined;
+								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
+								if (isMyDocuments) {
+									id = '@my';
+								} else {
+									id = this.getNodeParameter('id', i) as number;
+								}
 								const filters = this.getNodeParameter('filters', i);
 								const response = await docspaceJsonApiRequest.call(
 									this,
@@ -1807,6 +2625,19 @@ export class Onlyoffice implements INodeType {
 								break;
 							}
 
+							case 'getFolderPrimaryExternalLink': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L287
+								const id = this.getNodeParameter('id', i) as number;
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'GET',
+									`api/2.0/files/folder/${id}/link`,
+								);
+								resultDataObject = response.body;
+								break;
+							}
+
 							case 'getFolders': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L217
 								const id = this.getNodeParameter('id', i) as number;
@@ -1820,24 +2651,14 @@ export class Onlyoffice implements INodeType {
 								break;
 							}
 
-							case 'getMyFolder': {
-								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
-								const response = await docspaceJsonApiRequest.call(
-									this,
-									i,
-									'GET',
-									'api/2.0/files/@my',
-								);
-								resultDataObject = response.body;
-								break;
-							}
-
-							case 'renameFolder': {
+							case 'updateFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L255
 								const id = this.getNodeParameter('id', i) as number;
-								const title = this.getNodeParameter('title', i) as string;
+								const fields = this.getNodeParameter('fields', i) as {
+									title?: string;
+								};
 								const body = {
-									title,
+									title: fields.title,
 								};
 								const response = await docspaceJsonApiRequest.call(
 									this,
@@ -1848,6 +2669,74 @@ export class Onlyoffice implements INodeType {
 									body,
 								);
 								resultDataObject = response.body;
+								break;
+							}
+
+							default: {
+								break;
+							}
+						}
+					}
+
+					case 'fileOrFolder': {
+						switch (operation) {
+							case 'copyFileOrFolder': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L74
+								const fileIds = this.getNodeParameter('fileIds', i) as number[];
+								const folderIds = this.getNodeParameter('folderIds', i) as number[];
+								let destFolderId: string | number | undefined;
+								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
+								if (isMyDocuments) {
+									destFolderId = '@my';
+								} else {
+									destFolderId = this.getNodeParameter('destFolderId', i) as number;
+								}
+								const body = {
+									fileIds,
+									folderIds,
+									destFolderId,
+									deleteAfter: false,
+								};
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'PUT',
+									'api/2.0/files/fileops/copy',
+									undefined,
+									body,
+								);
+								const resolved = await docspaceResolveAsyncApiResponse.call(this, i, response.body);
+								resultDataObject = resolved;
+								break;
+							}
+
+							case 'moveFileOrFolder': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L173
+								const fileIds = this.getNodeParameter('fileIds', i) as number[];
+								const folderIds = this.getNodeParameter('folderIds', i) as number[];
+								let destFolderId: string | number | undefined;
+								const isMydDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
+								if (isMydDocuments) {
+									destFolderId = '@my';
+								} else {
+									destFolderId = this.getNodeParameter('destFolderId', i) as number;
+								}
+								const body = {
+									fileIds,
+									folderIds,
+									destFolderId,
+									deleteAfter: false,
+								};
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'PUT',
+									'api/2.0/files/fileops/move',
+									undefined,
+									body,
+								);
+								const resolved = await docspaceResolveAsyncApiResponse.call(this, i, response.body);
+								resultDataObject = resolved;
 								break;
 							}
 
@@ -1913,6 +2802,19 @@ export class Onlyoffice implements INodeType {
 									i,
 									'GET',
 									`api/2.0/files/rooms/${id}`,
+								);
+								resultDataObject = response.body;
+								break;
+							}
+
+							case 'getRoomsPrimaryExternalLink': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L424
+								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'GET',
+									`api/2.0/files/rooms/${id}/link`,
 								);
 								resultDataObject = response.body;
 								break;
@@ -1984,6 +2886,175 @@ export class Onlyoffice implements INodeType {
 									`api/2.0/files/rooms/${id}`,
 									undefined,
 									body,
+								);
+								resultDataObject = response.body;
+								break;
+							}
+
+							default: {
+								break;
+							}
+						}
+					}
+
+					case 'user': {
+						switch (operation) {
+							case 'getUser': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L847
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L890
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L1355
+								const isMe = this.getNodeParameter('isMe', i) as boolean;
+								let response;
+								if (isMe) {
+									response = await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'GET',
+										'api/2.0/people/@self',
+									);
+								} else {
+									const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+									const email = this.getNodeParameter('email', i) as string;
+									if (id && email) {
+										throw new NodeOperationError(
+											this.getNode(),
+											'Must provide either id or email, not both',
+											{ itemIndex: i },
+										);
+									}
+									if (id) {
+										response = await docspaceJsonApiRequest.call(
+											this,
+											i,
+											'GET',
+											`api/2.0/people/${id}`,
+										);
+									} else if (email) {
+										const query = {
+											email,
+										};
+										response = await docspaceJsonApiRequest.call(
+											this,
+											i,
+											'GET',
+											'api/2.0/people/email',
+											query,
+										);
+									}
+								}
+								resultDataObject = response.body;
+								break;
+							}
+
+							case 'deleteUser': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L947
+								const id = this.getNodeParameter('id', i) as string;
+								const body = {
+									userIds: [id],
+								};
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'PUT',
+									'api/2.0/people/delete',
+									undefined,
+									body,
+								);
+								resultDataObject = response.body;
+								break;
+							}
+
+							case 'inviteUser': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L325
+								const invitations = this.getNodeParameter('invitations', i) as IDataObject[];
+								const culture = this.getNodeParameter('culture', i, '', {
+									extractValue: true,
+								}) as string;
+								const body = {
+									invitations,
+									culture,
+								};
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'POST',
+									'api/2.0/people/invite',
+									undefined,
+									body,
+								);
+								resultDataObject = response.body;
+								break;
+							}
+
+							case 'searchUser': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L681
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L880
+								const query = this.getNodeParameter('query', i) as string;
+								const filters = this.getNodeParameter('filters', i);
+								let response;
+								if (query) {
+									response = await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'GET',
+										`api/2.0/people/@search/${encodeURIComponent(query)}`,
+										filters,
+									);
+								} else {
+									response = await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'GET',
+										'api/2.0/people',
+										filters,
+									);
+								}
+								resultDataObject = response.body;
+								break;
+							}
+
+							case 'updateUser': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L890
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L1576
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L1941
+								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const fields = this.getNodeParameter('fields', i) as {
+									status?: number;
+									type?: number;
+								};
+								if (fields.status) {
+									const body = {
+										userIds: [id],
+									};
+									await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'PUT',
+										`api/2.0/people/status/${fields.status}`,
+										undefined,
+										body,
+									);
+								}
+								if (fields.type) {
+									const body = {
+										type: fields.type,
+										userId: id,
+									};
+									await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'POST',
+										'api/2.0/people/type',
+										undefined,
+										body,
+									);
+									// todo: sync
+								}
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'GET',
+									`api/2.0/people/${id}`,
 								);
 								resultDataObject = response.body;
 								break;

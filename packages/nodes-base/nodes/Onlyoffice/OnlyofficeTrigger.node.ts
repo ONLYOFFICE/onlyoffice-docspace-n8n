@@ -16,8 +16,7 @@ export class OnlyofficeTrigger implements INodeType {
 		icon: 'file:onlyoffice.svg',
 		iconColor: 'orange',
 		group: ['trigger'],
-		description: '-',
-		subtitle: '-',
+		description: 'Starts the workflow when ONLYOFFICE DocSpace events occur',
 		version: [1],
 		defaults: {
 			name: 'ONLYOFFICE DocSpace Trigger',

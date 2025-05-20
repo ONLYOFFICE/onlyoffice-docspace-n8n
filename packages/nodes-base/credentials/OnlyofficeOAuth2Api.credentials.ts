@@ -1,11 +1,6 @@
 import type { ICredentialType, INodeProperties } from 'n8n-workflow';
 
-const scopes: string[] = [
-	'files:read',
-	'files:write',
-	'rooms:read',
-	'rooms:write',
-];
+const scopes: string[] = ['files:read', 'files:write', 'rooms:read', 'rooms:write'];
 
 export class OnlyofficeOAuth2Api implements ICredentialType {
 	name = 'onlyofficeOAuth2Api';

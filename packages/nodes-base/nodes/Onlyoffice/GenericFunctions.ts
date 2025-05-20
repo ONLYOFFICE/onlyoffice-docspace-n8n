@@ -5,9 +5,12 @@ import type {
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
-import { ApplicationError } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 
-function docspaceResolveCredentialsType(authentication: string): string {
+function docspaceResolveCredentialsType(
+	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
+	authentication: string,
+): string {
 	switch (authentication) {
 		case 'apiKey':
 			return 'onlyofficeApiKeyApi';
@@ -18,7 +21,7 @@ function docspaceResolveCredentialsType(authentication: string): string {
 		case 'personalAccessToken':
 			return 'onlyofficePersonalAccessTokenApi';
 		default:
-			throw new ApplicationError(`Unknown authentication ${authentication}`);
+			throw new NodeOperationError(this.getNode(), `Unknown authentication ${authentication}`);
 	}
 }
 
@@ -29,7 +32,7 @@ export async function docspaceBufferApiRequest(
 	url: string,
 ): Promise<any> {
 	const authentication = this.getNodeParameter('authentication', i) as string;
-	const credentialsType = docspaceResolveCredentialsType(authentication);
+	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
 	const baseUrl = credentials.baseUrl as string;
 	const headers: IDataObject = {
@@ -59,7 +62,7 @@ export async function docspaceFormDataApiRequest(
 	body: FormData,
 ): Promise<any> {
 	const authentication = this.getNodeParameter('authentication', i) as string;
-	const credentialsType = docspaceResolveCredentialsType(authentication);
+	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
 	const baseUrl = credentials.baseUrl as string;
 	const headers: IDataObject = {
@@ -91,7 +94,7 @@ export async function docspaceJsonApiRequest(
 	body?: object,
 ): Promise<any> {
 	const authentication = this.getNodeParameter('authentication', i) as string;
-	const credentialsType = docspaceResolveCredentialsType(authentication);
+	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
 	const baseUrl = credentials.baseUrl as string;
 	const headers: IDataObject = {
@@ -134,7 +137,7 @@ export async function docspaceResolveAsyncApiResponse(
 		operations.push(data.response);
 	}
 	if (operations.length === 0) {
-		throw new ApplicationError('No input operations');
+		throw new NodeOperationError(this.getNode(), 'No input operations');
 	}
 	let finished = 0;
 	let errors = '';
@@ -148,7 +151,7 @@ export async function docspaceResolveAsyncApiResponse(
 	}
 	if (errors) {
 		errors = errors.slice(0, -2);
-		throw new ApplicationError(`Errors in operations: ${errors}`);
+		throw new NodeOperationError(this.getNode(), `Errors in operations: ${errors}`);
 	}
 	if (finished === operations.length) {
 		return { response: operations };
@@ -175,7 +178,7 @@ export async function docspaceResolveAsyncApiResponse(
 		}
 		if (errors) {
 			errors = errors.slice(0, -2);
-			throw new ApplicationError(`Errors in operations: ${errors}`);
+			throw new NodeOperationError(this.getNode(), `Errors in operations: ${errors}`);
 		}
 		if (finished === operations.length) {
 			return operations;
@@ -184,5 +187,5 @@ export async function docspaceResolveAsyncApiResponse(
 			await new Promise((resolve) => setTimeout(resolve, DELAY));
 		}
 	}
-	throw new ApplicationError('Timeout waiting for operations to finish');
+	throw new NodeOperationError(this.getNode(), 'Timeout waiting for operations to finish');
 }
