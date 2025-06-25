@@ -279,6 +279,11 @@ export class Onlyoffice implements INodeType {
 						action: 'Get the info of a folder',
 					},
 					{
+						name: 'Get Folder History',
+						value: 'getFolderHistory',
+						action: 'Get the history of a folder',
+					},
+					{
 						name: 'Get Folder Link',
 						value: 'getFolderLink',
 						action: 'Get the link of a folder',
@@ -1056,6 +1061,50 @@ export class Onlyoffice implements INodeType {
 					},
 				},
 				required: true,
+			},
+
+			/* -------------------------------------------------------------------------- */
+			/*                            folder:getFolderHistory                            */
+			/* -------------------------------------------------------------------------- */
+			{
+				displayName: 'Folder ID',
+				name: 'folderId',
+				type: 'number',
+				default: 0,
+				description: 'The ID of the folder to get history for',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['getFolderHistory'],
+					},
+				},
+				required: true,
+			},
+			{
+				displayName: 'From Date',
+				name: 'fromDate',
+				type: 'string',
+				default: '',
+				description: 'The start date of the history request',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['getFolderHistory'],
+					},
+				},
+			},
+			{
+				displayName: 'To Date',
+				name: 'toDate',
+				type: 'string',
+				default: '',
+				description: 'The end date of the history request',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['getFolderHistory'],
+					},
+				},
 			},
 
 			/* -------------------------------------------------------------------------- */
@@ -3347,6 +3396,32 @@ export class Onlyoffice implements INodeType {
 									i,
 									'GET',
 									`api/2.0/files/folder/${folderId}`,
+								);
+								resultDataObject = response.body.response;
+								break;
+							}
+
+							case 'getFolderHistory': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L64
+								const folderId = this.getNodeParameter('folderId', i) as number;
+								const fromDate = this.getNodeParameter('fromDate', i) as string;
+								const toDate = this.getNodeParameter('toDate', i) as string;
+								const query: {
+									fromDate?: string;
+									toDate?: string;
+								} = {};
+								if (fromDate) {
+									query.fromDate = fromDate;
+								}
+								if (toDate) {
+									query.toDate = toDate;
+								}
+								const response = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'GET',
+									`api/2.0/files/folder/${folderId}/log`,
+									query,
 								);
 								resultDataObject = response.body.response;
 								break;
