@@ -422,8 +422,8 @@ export class Onlyoffice implements INodeType {
 			/*                                file:copyFile                               */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to copy',
@@ -454,7 +454,7 @@ export class Onlyoffice implements INodeType {
 				name: 'destFolderId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder or room to copy the file to',
+				description: 'The ID of the room or folder to copy the file to',
 				displayOptions: {
 					show: {
 						isMyDocuments: [false],
@@ -483,11 +483,11 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Parent ID',
+				name: 'parentId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder to create the file in',
+				description: 'The ID of the room or folder to create the file in',
 				displayOptions: {
 					show: {
 						isMyDocuments: [false],
@@ -495,6 +495,38 @@ export class Onlyoffice implements INodeType {
 						operation: ['createFile'],
 					},
 				},
+				required: true,
+			},
+			{
+				displayName: 'Type',
+				name: 'type',
+				type: 'options',
+				default: 'document',
+				description: 'The type of the file to create',
+				displayOptions: {
+					show: {
+						resource: ['file'],
+						operation: ['createFile'],
+					},
+				},
+				options: [
+					{
+						name: 'Document',
+						value: 'document',
+					},
+					{
+						name: 'Spreadsheet',
+						value: 'spreadsheet',
+					},
+					{
+						name: 'Presentation',
+						value: 'presentation',
+					},
+					{
+						name: 'PDF Form',
+						value: 'pdfForm',
+					},
+				],
 				required: true,
 			},
 			{
@@ -509,14 +541,15 @@ export class Onlyoffice implements INodeType {
 						operation: ['createFile'],
 					},
 				},
+				required: true,
 			},
 
 			/* -------------------------------------------------------------------------- */
 			/*                               file:deleteFile                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to delete',
@@ -533,8 +566,8 @@ export class Onlyoffice implements INodeType {
 			/*                              file:downloadFile                             */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to download',
@@ -615,8 +648,8 @@ export class Onlyoffice implements INodeType {
 			/*                              file:getFileInfo                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to get info for',
@@ -633,8 +666,8 @@ export class Onlyoffice implements INodeType {
 			/*                              file:getFileLink                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to get the link for',
@@ -651,8 +684,8 @@ export class Onlyoffice implements INodeType {
 			/*                                file:moveFile                               */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to move',
@@ -683,7 +716,7 @@ export class Onlyoffice implements INodeType {
 				name: 'destFolderId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder or room to move the file to',
+				description: 'The ID of the room or folder to move the file to',
 				displayOptions: {
 					show: {
 						isMyDocuments: [false],
@@ -698,8 +731,8 @@ export class Onlyoffice implements INodeType {
 			/*                               file:updateFile                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'File ID',
+				name: 'fileId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the file to update',
@@ -743,8 +776,8 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Parent ID',
+				name: 'parentId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the room or folder to upload the file to',
@@ -767,6 +800,23 @@ export class Onlyoffice implements INodeType {
 					show: {
 						resource: ['file'],
 						operation: ['uploadFile'],
+						binaryData: [false],
+					},
+				},
+				placeholder: 'File from n8n.txt',
+			},
+			{
+				displayName: 'File Name',
+				name: 'fileName',
+				type: 'string',
+				default: '',
+				description: 'The file name with an extension to use for the uploaded file',
+				hint: 'If not set, the file name will be taken from the binary data',
+				displayOptions: {
+					show: {
+						resource: ['file'],
+						operation: ['uploadFile'],
+						binaryData: [true],
 					},
 				},
 			},
@@ -789,7 +839,7 @@ export class Onlyoffice implements INodeType {
 				name: 'fileContent',
 				type: 'string',
 				default: '',
-				description: 'The text content of the file',
+				description: 'The text content of the file to upload',
 				displayOptions: {
 					show: {
 						binaryData: [false],
@@ -819,8 +869,8 @@ export class Onlyoffice implements INodeType {
 			/*                              folder:copyFolder                             */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to copy',
@@ -851,7 +901,7 @@ export class Onlyoffice implements INodeType {
 				name: 'destFolderId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder or room to copy the folder to',
+				description: 'The ID of the room or folder to copy the folder to',
 				displayOptions: {
 					show: {
 						isMyDocuments: [false],
@@ -880,8 +930,8 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Parent ID',
+				name: 'parentId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the room or folder to create the folder in',
@@ -906,14 +956,15 @@ export class Onlyoffice implements INodeType {
 						operation: ['createFolder'],
 					},
 				},
+				required: true,
 			},
 
 			/* -------------------------------------------------------------------------- */
 			/*                             folder:deleteFolder                            */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to delete',
@@ -944,8 +995,8 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to get the contents of',
@@ -990,8 +1041,8 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to get info for',
@@ -1009,8 +1060,8 @@ export class Onlyoffice implements INodeType {
 			/*                            folder:getFolderLink                            */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to get the link for',
@@ -1027,8 +1078,8 @@ export class Onlyoffice implements INodeType {
 			/*                              folder:moveFolder                             */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to move',
@@ -1059,7 +1110,7 @@ export class Onlyoffice implements INodeType {
 				name: 'destFolderId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder or room to move the folder to',
+				description: 'The ID of the room or folder to move the folder to',
 				displayOptions: {
 					show: {
 						isMyDocuments: [false],
@@ -1074,8 +1125,8 @@ export class Onlyoffice implements INodeType {
 			/*                             folder:updateFolder                            */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Folder ID',
+				name: 'folderId',
 				type: 'number',
 				default: 0,
 				description: 'The ID of the folder to update',
@@ -1105,8 +1156,8 @@ export class Onlyoffice implements INodeType {
 			/*                              room:archiveRoom                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Room ID',
+				name: 'roomId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -1163,6 +1214,7 @@ export class Onlyoffice implements INodeType {
 						operation: ['createRoom'],
 					},
 				},
+				required: true,
 			},
 			{
 				displayName: 'Type',
@@ -1213,8 +1265,8 @@ export class Onlyoffice implements INodeType {
 			/*                              room:getRoomInfo                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Room ID',
+				name: 'roomId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -1260,8 +1312,8 @@ export class Onlyoffice implements INodeType {
 			/*                              room:getRoomLink                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Room ID',
+				name: 'roomId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -1665,8 +1717,8 @@ export class Onlyoffice implements INodeType {
 			/*                               room:searchUser                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Room ID',
+				name: 'roomId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -1725,8 +1777,8 @@ export class Onlyoffice implements INodeType {
 			/*                               room:updateRoom                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'Room ID',
+				name: 'roomId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -1972,8 +2024,8 @@ export class Onlyoffice implements INodeType {
 			/*                               user:deleteUser                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'User ID',
+				name: 'userId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -2010,8 +2062,8 @@ export class Onlyoffice implements INodeType {
 			/*                               user:disableUser                             */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'User ID',
+				name: 'userId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -2048,8 +2100,8 @@ export class Onlyoffice implements INodeType {
 			/*                               user:enableUser                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'User ID',
+				name: 'userId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -2100,8 +2152,8 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'User ID',
+				name: 'userId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -2250,8 +2302,8 @@ export class Onlyoffice implements INodeType {
 			/*                               user:updateUser                              */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'ID',
-				name: 'id',
+				displayName: 'User ID',
+				name: 'userId',
 				type: 'resourceLocator',
 				default: {
 					mode: 'list',
@@ -2415,8 +2467,8 @@ export class Onlyoffice implements INodeType {
 			): Promise<INodeListSearchResult> {
 				// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/SettingsController.cs#L199
 				const results: INodeListSearchItems[] = [];
-				const id = this.getNodeParameter('id', 0) as number;
-				if (!id) {
+				const fileId = this.getNodeParameter('fileId', 0) as number;
+				if (!fileId) {
 					throw new NodeOperationError(
 						this.getNode(),
 						'The ID of the file to get convertible formats for is required',
@@ -2426,7 +2478,7 @@ export class Onlyoffice implements INodeType {
 					this,
 					0,
 					'GET',
-					`api/2.0/files/file/${id}`,
+					`api/2.0/files/file/${fileId}`,
 				);
 				const settingsResponse = await docspaceJsonApiRequest.call(
 					this,
@@ -2753,7 +2805,7 @@ export class Onlyoffice implements INodeType {
 							case 'copyFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L74
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								let destFolderId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
@@ -2778,7 +2830,7 @@ export class Onlyoffice implements INodeType {
 									destFolderId: number;
 									deleteAfter: boolean;
 								} = {
-									fileIds: [id],
+									fileIds: [fileId],
 									destFolderId,
 									deleteAfter: false,
 								};
@@ -2795,7 +2847,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 								);
 								resultDataObject = infoResponse.body.response;
 								break;
@@ -2805,7 +2857,7 @@ export class Onlyoffice implements INodeType {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L198
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L551
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
-								let id: number | undefined;
+								let parentId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
 									const infoQuery: {
@@ -2820,21 +2872,41 @@ export class Onlyoffice implements INodeType {
 										'api/2.0/files/@my',
 										infoQuery,
 									);
-									id = infoResponse.body.response.current.id as number;
+									parentId = infoResponse.body.response.current.id as number;
 								} else {
-									id = this.getNodeParameter('id', i) as number;
+									parentId = this.getNodeParameter('parentId', i) as number;
+								}
+								let extension: string | undefined;
+								const type = this.getNodeParameter('type', i) as string;
+								switch (type) {
+									case 'document':
+										extension = '.docx';
+										break;
+									case 'spreadsheet':
+										extension = '.xlsx';
+										break;
+									case 'presentation':
+										extension = '.pptx';
+										break;
+									case 'pdfForm':
+										extension = '.pdf';
+										break;
+									default:
+										throw new NodeOperationError(this.getNode(), `Unknown file type "${type}"`, {
+											itemIndex: i,
+										});
 								}
 								const title = this.getNodeParameter('title', i) as string;
 								const body: {
 									title: string;
 								} = {
-									title,
+									title: `${title}${extension}`,
 								};
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'POST',
-									`api/2.0/files/${id}/file`,
+									`api/2.0/files/${parentId}/file`,
 									undefined,
 									body,
 								);
@@ -2845,12 +2917,12 @@ export class Onlyoffice implements INodeType {
 							case 'deleteFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L239
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								const infoResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 								);
 								const deleteBody: {
 									deleteAfter: boolean;
@@ -2863,7 +2935,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'DELETE',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 									undefined,
 									deleteBody,
 								);
@@ -2876,13 +2948,13 @@ export class Onlyoffice implements INodeType {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L51
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/SettingsController.cs#L199
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								const asText = this.getNodeParameter('asText', i) as boolean;
 								const infoResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 								);
 								resultDataObject = infoResponse.body;
 								let extension: string | undefined;
@@ -2921,9 +2993,9 @@ export class Onlyoffice implements INodeType {
 									fileIds?: number[];
 								} = {};
 								if (extension) {
-									downloadBody.fileConvertIds = [{ key: id, value: extension }];
+									downloadBody.fileConvertIds = [{ key: fileId, value: extension }];
 								} else {
-									downloadBody.fileIds = [id];
+									downloadBody.fileIds = [fileId];
 								}
 								const downloadResponse = await docspaceJsonApiRequest.call(
 									this,
@@ -2964,12 +3036,12 @@ export class Onlyoffice implements INodeType {
 
 							case 'getFileInfo': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 								);
 								resultDataObject = response.body.response;
 								break;
@@ -2977,12 +3049,12 @@ export class Onlyoffice implements INodeType {
 
 							case 'getFileLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L445
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/file/${id}/link`,
+									`api/2.0/files/file/${fileId}/link`,
 								);
 								resultDataObject = response.body.response;
 								break;
@@ -2991,7 +3063,7 @@ export class Onlyoffice implements INodeType {
 							case 'moveFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L173
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								let destFolderId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
@@ -3016,7 +3088,7 @@ export class Onlyoffice implements INodeType {
 									destFolderId: number;
 									deleteAfter: boolean;
 								} = {
-									fileIds: [id],
+									fileIds: [fileId],
 									destFolderId,
 									deleteAfter: false,
 								};
@@ -3033,7 +3105,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 								);
 								resultDataObject = infoResponse.body.response;
 								break;
@@ -3041,7 +3113,7 @@ export class Onlyoffice implements INodeType {
 
 							case 'updateFile': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L399
-								const id = this.getNodeParameter('id', i) as number;
+								const fileId = this.getNodeParameter('fileId', i) as number;
 								const title = this.getNodeParameter('title', i) as string;
 								const body: {
 									title?: string;
@@ -3053,7 +3125,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'PUT',
-									`api/2.0/files/file/${id}`,
+									`api/2.0/files/file/${fileId}`,
 									undefined,
 									body,
 								);
@@ -3067,7 +3139,7 @@ export class Onlyoffice implements INodeType {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/UploadController.cs/#L76
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Startup.cs/#L76
 								const MAX_CHUNK_SIZE = 10 * 1024 * 1024; // 10mb
-								let id: number | undefined;
+								let parentId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
 									const infoQuery: {
@@ -3082,9 +3154,9 @@ export class Onlyoffice implements INodeType {
 										'api/2.0/files/@my',
 										infoQuery,
 									);
-									id = infoResponse.body.response.current.id as number;
+									parentId = infoResponse.body.response.current.id as number;
 								} else {
-									id = this.getNodeParameter('id', i) as number;
+									parentId = this.getNodeParameter('parentId', i) as number;
 								}
 								const sessionBody: {
 									fileName: string;
@@ -3130,7 +3202,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'POST',
-									`api/2.0/files/${id}/upload/create_session`,
+									`api/2.0/files/${parentId}/upload/create_session`,
 									undefined,
 									sessionBody,
 								);
@@ -3185,7 +3257,7 @@ export class Onlyoffice implements INodeType {
 							case 'copyFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L74
-								const id = this.getNodeParameter('id', i) as number;
+								const folderId = this.getNodeParameter('folderId', i) as number;
 								let destFolderId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
@@ -3210,7 +3282,7 @@ export class Onlyoffice implements INodeType {
 									destFolderId: number;
 									deleteAfter: boolean;
 								} = {
-									folderIds: [id],
+									folderIds: [folderId],
 									destFolderId,
 									deleteAfter: false,
 								};
@@ -3227,7 +3299,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${folderId}`,
 								);
 								resultDataObject = infoResponse.body;
 								break;
@@ -3236,7 +3308,7 @@ export class Onlyoffice implements INodeType {
 							case 'createFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L110
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
-								let id: number | undefined;
+								let parentId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
 									const infoQuery: {
@@ -3251,9 +3323,9 @@ export class Onlyoffice implements INodeType {
 										'api/2.0/files/@my',
 										infoQuery,
 									);
-									id = infoResponse.body.response.current.id as number;
+									parentId = infoResponse.body.response.current.id as number;
 								} else {
-									id = this.getNodeParameter('id', i) as number;
+									parentId = this.getNodeParameter('parentId', i) as number;
 								}
 								const title = this.getNodeParameter('title', i) as string;
 								const body: {
@@ -3265,7 +3337,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'POST',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${parentId}`,
 									undefined,
 									body,
 								);
@@ -3276,12 +3348,12 @@ export class Onlyoffice implements INodeType {
 							case 'deleteFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L126
-								const id = this.getNodeParameter('id', i) as number;
+								const folderId = this.getNodeParameter('folderId', i) as number;
 								const infoResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${folderId}`,
 								);
 								const deleteBody: {
 									deleteAfter: boolean;
@@ -3294,7 +3366,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'DELETE',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${folderId}`,
 									undefined,
 									deleteBody,
 								);
@@ -3306,12 +3378,12 @@ export class Onlyoffice implements INodeType {
 							case 'getFolderContents': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L161
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
-								let id: number | string | undefined;
+								let folderId: number | string | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
-									id = '@my';
+									folderId = '@my';
 								} else {
-									id = this.getNodeParameter('id', i) as number;
+									folderId = this.getNodeParameter('folderId', i) as number;
 								}
 								const queryString = this.getNodeParameter('query', i) as string;
 								const query: {
@@ -3324,7 +3396,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/files/${id}`,
+									`api/2.0/files/${folderId}`,
 									query,
 								);
 								resultDataObject = response.body.response;
@@ -3334,7 +3406,7 @@ export class Onlyoffice implements INodeType {
 							case 'getFolderInfo': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L180
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
-								let id: number | string | undefined;
+								let folderId: number | string | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
 									const infoQuery: {
@@ -3349,15 +3421,15 @@ export class Onlyoffice implements INodeType {
 										'api/2.0/files/@my',
 										infoQuery,
 									);
-									id = infoResponse.body.response.current.id as number;
+									folderId = infoResponse.body.response.current.id as number;
 								} else {
-									id = this.getNodeParameter('id', i) as number;
+									folderId = this.getNodeParameter('folderId', i) as number;
 								}
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${folderId}`,
 								);
 								resultDataObject = response.body.response;
 								break;
@@ -3365,12 +3437,12 @@ export class Onlyoffice implements INodeType {
 
 							case 'getFolderLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L287
-								const id = this.getNodeParameter('id', i) as number;
+								const folderId = this.getNodeParameter('folderId', i) as number;
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/folder/${id}/link`,
+									`api/2.0/files/folder/${folderId}/link`,
 								);
 								resultDataObject = response.body.response;
 								break;
@@ -3379,7 +3451,7 @@ export class Onlyoffice implements INodeType {
 							case 'moveFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L348
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/OperationController.cs/#L173
-								const id = this.getNodeParameter('id', i) as number;
+								const folderId = this.getNodeParameter('folderId', i) as number;
 								let destFolderId: number | undefined;
 								const isMyDocuments = this.getNodeParameter('isMyDocuments', i) as boolean;
 								if (isMyDocuments) {
@@ -3404,7 +3476,7 @@ export class Onlyoffice implements INodeType {
 									destFolderId: number;
 									deleteAfter: boolean;
 								} = {
-									folderIds: [id],
+									folderIds: [folderId],
 									destFolderId,
 									deleteAfter: false,
 								};
@@ -3421,7 +3493,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${folderId}`,
 								);
 								resultDataObject = infoResponse.body.response;
 								break;
@@ -3429,7 +3501,7 @@ export class Onlyoffice implements INodeType {
 
 							case 'updateFolder': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L255
-								const id = this.getNodeParameter('id', i) as number;
+								const folderId = this.getNodeParameter('folderId', i) as number;
 								const title = this.getNodeParameter('title', i) as string;
 								const body: {
 									title?: string;
@@ -3441,7 +3513,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'PUT',
-									`api/2.0/files/folder/${id}`,
+									`api/2.0/files/folder/${folderId}`,
 									undefined,
 									body,
 								);
@@ -3462,12 +3534,14 @@ export class Onlyoffice implements INodeType {
 							case 'archiveRoom': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L305
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L275
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const roomId = this.getNodeParameter('roomId', i, '', {
+									extractValue: true,
+								}) as string;
 								const infoResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/rooms/${id}`,
+									`api/2.0/files/rooms/${roomId}`,
 								);
 								const archiveBody: {
 									deleteAfter: boolean;
@@ -3478,7 +3552,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'PUT',
-									`api/2.0/files/rooms/${id}/archive`,
+									`api/2.0/files/rooms/${roomId}/archive`,
 									undefined,
 									archiveBody,
 								);
@@ -3512,12 +3586,14 @@ export class Onlyoffice implements INodeType {
 
 							case 'getRoomInfo': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L165
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const roomId = this.getNodeParameter('roomId', i, '', {
+									extractValue: true,
+								}) as string;
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/rooms/${id}`,
+									`api/2.0/files/rooms/${roomId}`,
 								);
 								resultDataObject = response.body.response;
 								break;
@@ -3525,12 +3601,14 @@ export class Onlyoffice implements INodeType {
 
 							case 'getRoomLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L424
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const roomId = this.getNodeParameter('roomId', i, '', {
+									extractValue: true,
+								}) as string;
 								const response = await docspaceJsonApiRequest.call(
 									this,
 									i,
 									'GET',
-									`api/2.0/files/rooms/${id}/link`,
+									`api/2.0/files/rooms/${roomId}/link`,
 								);
 								resultDataObject = response.body.response;
 								break;
@@ -3745,7 +3823,9 @@ export class Onlyoffice implements INodeType {
 
 							case 'searchUser': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L349
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const roomId = this.getNodeParameter('roomId', i, '', {
+									extractValue: true,
+								}) as string;
 								const queryString = this.getNodeParameter('query', i) as string;
 								const query: {
 									filterValue?: string;
@@ -3757,7 +3837,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/files/rooms/${id}/share`,
+									`api/2.0/files/rooms/${roomId}/share`,
 									query,
 								);
 								resultDataObject = response.body.response;
@@ -3766,7 +3846,9 @@ export class Onlyoffice implements INodeType {
 
 							case 'updateRoom': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L180
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const roomId = this.getNodeParameter('roomId', i, '', {
+									extractValue: true,
+								}) as string;
 								const title = this.getNodeParameter('title', i) as string;
 								const body = {
 									title,
@@ -3775,7 +3857,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'PUT',
-									`api/2.0/files/rooms/${id}`,
+									`api/2.0/files/rooms/${roomId}`,
 									undefined,
 									body,
 								);
@@ -3795,11 +3877,13 @@ export class Onlyoffice implements INodeType {
 						switch (operation) {
 							case 'deleteUser': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L947
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const userId = this.getNodeParameter('userId', i, '', {
+									extractValue: true,
+								}) as string;
 								const body: {
 									userIds: string[];
 								} = {
-									userIds: [id],
+									userIds: [userId],
 								};
 								const response = await docspaceJsonApiRequest.call(
 									this,
@@ -3817,7 +3901,9 @@ export class Onlyoffice implements INodeType {
 							case 'enableUser': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L890
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.People/Server/Api/UserController.cs/#L1576
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const userId = this.getNodeParameter('userId', i, '', {
+									extractValue: true,
+								}) as string;
 								let status: number;
 								switch (operation) {
 									case 'disableUser':
@@ -3830,7 +3916,7 @@ export class Onlyoffice implements INodeType {
 								const statusBody: {
 									userIds: string[];
 								} = {
-									userIds: [id],
+									userIds: [userId],
 								};
 								await docspaceJsonApiRequest.call(
 									this,
@@ -3844,7 +3930,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/people/${id}`,
+									`api/2.0/people/${userId}`,
 								);
 								resultDataObject = infoResponse.body.response;
 								break;
@@ -3864,21 +3950,23 @@ export class Onlyoffice implements INodeType {
 										'api/2.0/people/@self',
 									);
 								} else {
-									const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+									const userId = this.getNodeParameter('userId', i, '', {
+										extractValue: true,
+									}) as string;
 									const email = this.getNodeParameter('email', i) as string;
-									if (id && email) {
+									if (userId && email) {
 										throw new NodeOperationError(
 											this.getNode(),
 											'Must provide either id or email, not both',
 											{ itemIndex: i },
 										);
 									}
-									if (id) {
+									if (userId) {
 										response = await docspaceJsonApiRequest.call(
 											this,
 											i,
 											'GET',
-											`api/2.0/people/${id}`,
+											`api/2.0/people/${userId}`,
 										);
 									} else if (email) {
 										const query = {
@@ -3975,12 +4063,14 @@ export class Onlyoffice implements INodeType {
 							case 'updateUser': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L890
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L1941
-								const id = this.getNodeParameter('id', i, '', { extractValue: true }) as string;
+								const userId = this.getNodeParameter('userId', i, '', {
+									extractValue: true,
+								}) as string;
 								const type = this.getNodeParameter('type', i) as number;
 								if (type) {
 									const body = {
 										type,
-										userId: id,
+										userId,
 									};
 									await docspaceJsonApiRequest.call(
 										this,
@@ -3996,7 +4086,7 @@ export class Onlyoffice implements INodeType {
 									this,
 									i,
 									'GET',
-									`api/2.0/people/${id}`,
+									`api/2.0/people/${userId}`,
 								);
 								resultDataObject = response.body.response;
 								break;

@@ -23,11 +23,11 @@ export class OnlyofficeBasicAuthApi implements ICredentialType {
 			required: true,
 		},
 		{
-			displayName: 'Username',
-			name: 'username',
+			displayName: 'Email',
+			name: 'email',
 			type: 'string',
 			default: '',
-			description: 'The username for your ONLYOFFICE DocSpace portal',
+			description: 'The email for your ONLYOFFICE DocSpace portal',
 			required: true,
 		},
 		{
@@ -47,7 +47,7 @@ export class OnlyofficeBasicAuthApi implements ICredentialType {
 		type: 'generic',
 		properties: {
 			auth: {
-				username: '={{$credentials?.username}}',
+				username: '={{$credentials?.email}}',
 				password: '={{$credentials?.password}}',
 			},
 		},

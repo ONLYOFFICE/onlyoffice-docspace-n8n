@@ -5,7 +5,7 @@ import type {
 	IWebhookFunctions,
 	IWebhookResponseData,
 } from 'n8n-workflow';
-import { NodeConnectionTypes } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { docspaceJsonApiRequest } from './GenericFunctions';
 
@@ -59,7 +59,7 @@ export class OnlyofficeTrigger implements INodeType {
 			/*                                 properties                                 */
 			/* -------------------------------------------------------------------------- */
 			{
-				displayName: 'Name',
+				displayName: 'Webhook Name',
 				name: 'name',
 				type: 'string',
 				default: 'Webhook from n8n',
@@ -67,7 +67,7 @@ export class OnlyofficeTrigger implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'Serret Key',
+				displayName: 'Secret Key',
 				name: 'secretKey',
 				type: 'string',
 				typeOptions: {
@@ -75,21 +75,15 @@ export class OnlyofficeTrigger implements INodeType {
 				},
 				default: '',
 				description: 'The secret key used to sign the webhook',
+				hint: 'The secret key must contain from 8 to 30 characters, only latin letters, no spaces',
 				required: true,
 			},
 			{
-				displayName: 'Enabled',
-				name: 'enabled',
-				type: 'boolean',
-				default: true,
-				description: 'Whether the webhook is enabled',
-			},
-			{
-				displayName: 'SSL',
+				displayName: 'SSL Verification',
 				name: 'ssl',
 				type: 'boolean',
 				default: true,
-				description: 'Whether to use SSL for the webhook',
+				description: 'Whether to verify SSL certificates when delivering webhook payloads',
 			},
 			{
 				displayName: 'Events',
@@ -99,9 +93,9 @@ export class OnlyofficeTrigger implements INodeType {
 				description: 'The events to listen for',
 				options: [
 					{
-						name: 'All',
+						name: 'All Events',
 						value: 0,
-						description: 'All events',
+						description: 'All events will be listened for',
 					},
 					{
 						name: 'User Created',
@@ -244,6 +238,7 @@ export class OnlyofficeTrigger implements INodeType {
 						description: 'A room was copied',
 					},
 				],
+				required: true,
 			},
 		],
 
@@ -324,28 +319,38 @@ export class OnlyofficeTrigger implements INodeType {
 				const webhookData = this.getWorkflowStaticData('node');
 				const webhookUrl = this.getNodeWebhookUrl('default') as string;
 				const name = this.getNodeParameter('name') as string;
-				const enabled = this.getNodeParameter('enabled') as boolean;
 				const secretKey = this.getNodeParameter('secretKey') as string;
 				const ssl = this.getNodeParameter('ssl') as boolean;
 				const events = this.getNodeParameter('events') as number[];
-				const body: Record<string, unknown> = {
+				if (events.length === 0) {
+					throw new NodeOperationError(
+						this.getNode(),
+						'No events selected. Please select at least one event.',
+					);
+				}
+				let triggers = 0;
+				for (const trigger of events) {
+					if (trigger === 0) {
+						triggers = 0;
+						break;
+					}
+					triggers += trigger;
+				}
+				const body: {
+					name: string;
+					uri: string;
+					secretKey: string;
+					enabled: boolean;
+					ssl: boolean;
+					triggers: number;
+				} = {
 					name,
 					uri: webhookUrl,
 					secretKey,
-					enabled,
+					enabled: true,
 					ssl,
+					triggers,
 				};
-				if (events.length !== 0) {
-					let sum = 0;
-					for (const trigger of events) {
-						if (trigger === 0) {
-							sum = 0;
-							break;
-						}
-						sum += trigger;
-					}
-					body.triggers = sum;
-				}
 				const response = await docspaceJsonApiRequest.call(
 					this,
 					0,
