@@ -804,6 +804,7 @@ export class Onlyoffice implements INodeType {
 					},
 				},
 				placeholder: 'File from n8n.txt',
+				required: true,
 			},
 			{
 				displayName: 'File Name',
@@ -811,7 +812,7 @@ export class Onlyoffice implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'The file name with an extension to use for the uploaded file',
-				hint: 'If not set, the file name will be taken from the binary data',
+				hint: 'Leave empty to use the file name from the binary data',
 				displayOptions: {
 					show: {
 						resource: ['file'],
@@ -1015,6 +1016,7 @@ export class Onlyoffice implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'The query to search for in the folder contents',
+				hint: 'Leave empty to get all contents',
 				displayOptions: {
 					show: {
 						resource: ['folder'],
@@ -1232,8 +1234,7 @@ export class Onlyoffice implements INodeType {
 					{
 						name: 'Filling Forms Room',
 						value: 1,
-						description:
-							'Upload PDF forms into the room. Invite members and guests to fill out a PDF form. Review completed forms and analyze data automatically collected in a spreadsheet.',
+						description: 'Upload PDF forms into the room',
 					},
 					{
 						name: 'Editing Room',
@@ -1249,13 +1250,12 @@ export class Onlyoffice implements INodeType {
 						name: 'Public Room',
 						value: 6,
 						description:
-							'Share documents for viewing, editing, commenting, or reviewing without registration. You can also embed this room into any web interface.',
+							'Share documents for viewing, editing, commenting, or reviewing without registration',
 					},
 					{
 						name: 'Virtual Data Room',
 						value: 8,
-						description:
-							'Use VDR for advanced file security and transparency. Set watermarks, automatically index and track all content, restrict downloading and copying.',
+						description: 'Use VDR for advanced file security and transparency',
 					},
 				],
 				required: true,
@@ -1411,11 +1411,15 @@ export class Onlyoffice implements INodeType {
 				},
 				description: 'The ID of the user to invite to the room',
 				displayOptions: {
+					hide: {
+						userEmail: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						resource: ['room'],
 						operation: ['inviteUser'],
 					},
 				},
+				required: true,
 				modes: [
 					{
 						displayName: 'From List',
@@ -1442,11 +1446,16 @@ export class Onlyoffice implements INodeType {
 				description: 'The email of the user to invite to the room',
 				hint: 'Inviting a user by email will create a guest user if the user does not exist',
 				displayOptions: {
+					hide: {
+						userId: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						resource: ['room'],
 						operation: ['inviteUser'],
 					},
 				},
+				placeholder: 'name@email.com',
+				required: true,
 			},
 			{
 				displayName: 'User Access',
@@ -1457,6 +1466,7 @@ export class Onlyoffice implements INodeType {
 					value: '',
 				},
 				description: 'The access level to grant to the user',
+				hint: 'Available access levels depend on the room type',
 				displayOptions: {
 					show: {
 						resource: ['room'],
@@ -1497,19 +1507,6 @@ export class Onlyoffice implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'Message',
-				name: 'message',
-				type: 'string',
-				default: '',
-				description: 'The message to send to the user',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['inviteUser'],
-					},
-				},
-			},
-			{
 				displayName: 'Culture',
 				name: 'culture',
 				type: 'resourceLocator',
@@ -1517,9 +1514,11 @@ export class Onlyoffice implements INodeType {
 					mode: 'list',
 					value: '',
 				},
-				description: 'The language to use for the notification',
+				description: 'The language to use for the invitation',
+				hint: 'Leave empty to use the default portal language',
 				displayOptions: {
 					show: {
+						notify: [true],
 						resource: ['room'],
 						operation: ['inviteUser'],
 					},
@@ -1599,11 +1598,15 @@ export class Onlyoffice implements INodeType {
 				},
 				description: 'The ID of the user to remove from the room',
 				displayOptions: {
+					hide: {
+						userEmail: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						resource: ['room'],
 						operation: ['removeUser'],
 					},
 				},
+				required: true,
 				modes: [
 					{
 						displayName: 'From List',
@@ -1629,71 +1632,16 @@ export class Onlyoffice implements INodeType {
 				default: '',
 				description: 'The email of the user to remove from the room',
 				displayOptions: {
+					hide: {
+						userId: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						resource: ['room'],
 						operation: ['removeUser'],
 					},
 				},
-			},
-			{
-				displayName: 'Notify',
-				name: 'notify',
-				type: 'boolean',
-				default: true,
-				description: 'Whether to notify the user',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['removeUser'],
-					},
-				},
+				placeholder: 'name@email.com',
 				required: true,
-			},
-			{
-				displayName: 'Message',
-				name: 'message',
-				type: 'string',
-				default: '',
-				description: 'The message to send to the user',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['removeUser'],
-					},
-				},
-			},
-			{
-				displayName: 'Culture',
-				name: 'culture',
-				type: 'resourceLocator',
-				default: {
-					mode: 'list',
-					value: '',
-				},
-				description: 'The language to use for the notification',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['removeUser'],
-					},
-				},
-				modes: [
-					{
-						displayName: 'From List',
-						name: 'list',
-						type: 'list',
-						placeholder: 'Select a culture...',
-						typeOptions: {
-							searchable: true,
-							searchListMethod: 'listCultures',
-						},
-					},
-					{
-						displayName: 'Manual',
-						name: 'manual',
-						type: 'string',
-					},
-				],
 			},
 
 			/* -------------------------------------------------------------------------- */
@@ -1705,6 +1653,7 @@ export class Onlyoffice implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'The query to search for rooms',
+				hint: 'Leave empty to get all rooms',
 				displayOptions: {
 					show: {
 						resource: ['room'],
@@ -1765,6 +1714,7 @@ export class Onlyoffice implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'The query to search for users in the room',
+				hint: 'Leave empty to get all users in the room',
 				displayOptions: {
 					show: {
 						resource: ['room'],
@@ -1889,11 +1839,15 @@ export class Onlyoffice implements INodeType {
 				},
 				description: 'The ID of the user to update in the room',
 				displayOptions: {
+					hide: {
+						userEmail: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						resource: ['room'],
 						operation: ['updateUser'],
 					},
 				},
+				required: true,
 				modes: [
 					{
 						displayName: 'From List',
@@ -1919,11 +1873,16 @@ export class Onlyoffice implements INodeType {
 				default: '',
 				description: 'The email of the user to update in the room',
 				displayOptions: {
+					hide: {
+						userId: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						resource: ['room'],
 						operation: ['updateUser'],
 					},
 				},
+				placeholder: 'name@email.com',
+				required: true,
 			},
 			{
 				displayName: 'User Access',
@@ -1934,6 +1893,7 @@ export class Onlyoffice implements INodeType {
 					value: '',
 				},
 				description: 'The access level to grant to the user',
+				hint: 'Available access levels depend on the room type',
 				displayOptions: {
 					show: {
 						resource: ['room'],
@@ -1958,66 +1918,6 @@ export class Onlyoffice implements INodeType {
 					},
 				],
 				required: true,
-			},
-			{
-				displayName: 'Notify',
-				name: 'notify',
-				type: 'boolean',
-				default: true,
-				description: 'Whether to notify the user',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['updateUser'],
-					},
-				},
-				required: true,
-			},
-			{
-				displayName: 'Message',
-				name: 'message',
-				type: 'string',
-				default: '',
-				description: 'The message to send to the user',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['updateUser'],
-					},
-				},
-			},
-			{
-				displayName: 'Culture',
-				name: 'culture',
-				type: 'resourceLocator',
-				default: {
-					mode: 'list',
-					value: '',
-				},
-				description: 'The language to use for the notification',
-				displayOptions: {
-					show: {
-						resource: ['room'],
-						operation: ['updateUser'],
-					},
-				},
-				modes: [
-					{
-						displayName: 'From List',
-						name: 'list',
-						type: 'list',
-						placeholder: 'Select a culture...',
-						typeOptions: {
-							searchable: true,
-							searchListMethod: 'listCultures',
-						},
-					},
-					{
-						displayName: 'Manual',
-						name: 'manual',
-						type: 'string',
-					},
-				],
 			},
 
 			/* -------------------------------------------------------------------------- */
@@ -2161,12 +2061,16 @@ export class Onlyoffice implements INodeType {
 				},
 				description: 'The ID of the user to get for',
 				displayOptions: {
+					hide: {
+						userEmail: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						isMe: [false],
 						resource: ['user'],
 						operation: ['getUser'],
 					},
 				},
+				required: true,
 				modes: [
 					{
 						displayName: 'From List',
@@ -2186,19 +2090,23 @@ export class Onlyoffice implements INodeType {
 				],
 			},
 			{
-				displayName: 'Email',
-				name: 'email',
+				displayName: 'User Email',
+				name: 'userEmail',
 				type: 'string',
 				default: '',
 				description: 'The email of the user to get for',
-				placeholder: 'name@email.com',
 				displayOptions: {
+					hide: {
+						userId: [{ _cnd: { exists: true } }],
+					},
 					show: {
 						isMe: [false],
 						resource: ['user'],
 						operation: ['getUser'],
 					},
 				},
+				placeholder: 'name@email.com',
+				required: true,
 			},
 
 			/* -------------------------------------------------------------------------- */
@@ -2238,13 +2146,13 @@ export class Onlyoffice implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'The email of the user to invite',
-				placeholder: 'name@email.com',
 				displayOptions: {
 					show: {
 						resource: ['user'],
 						operation: ['inviteUser'],
 					},
 				},
+				placeholder: 'name@email.com',
 				required: true,
 			},
 			{
@@ -2256,6 +2164,7 @@ export class Onlyoffice implements INodeType {
 					value: '',
 				},
 				description: 'The languages to use for the invitation',
+				hint: 'Leave empty to use the default portal language',
 				displayOptions: {
 					show: {
 						resource: ['user'],
@@ -2290,6 +2199,7 @@ export class Onlyoffice implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'The query to search for users',
+				hint: 'Leave empty to get all users',
 				displayOptions: {
 					show: {
 						resource: ['user'],
@@ -3614,24 +3524,31 @@ export class Onlyoffice implements INodeType {
 								break;
 							}
 
-							case 'inviteUser':
-							case 'updateUser': {
+							case 'inviteUser': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L311
 								const roomId = this.getNodeParameter('roomId', i, 0, {
 									extractValue: true,
 								}) as number;
-								const userId = this.getNodeParameter('userId', i, '', {
-									extractValue: true,
-								}) as string;
-								const userEmail = this.getNodeParameter('userEmail', i) as string;
+								let userId: string | undefined;
+								try {
+									userId = this.getNodeParameter('userId', i, '', {
+										extractValue: true,
+									}) as string;
+								} catch {}
+								let userEmail: string | undefined;
+								try {
+									userEmail = this.getNodeParameter('userEmail', i) as string;
+								} catch {}
 								const userAccess = this.getNodeParameter('userAccess', i, 0, {
 									extractValue: true,
 								}) as number;
 								const notify = this.getNodeParameter('notify', i) as boolean;
-								const message = this.getNodeParameter('message', i) as string;
-								const culture = this.getNodeParameter('culture', i, '', {
-									extractValue: true,
-								}) as string;
+								let culture: string | undefined;
+								try {
+									culture = this.getNodeParameter('culture', i, '', {
+										extractValue: true,
+									}) as string;
+								} catch {}
 								if (!userId && !userEmail) {
 									throw new NodeOperationError(
 										this.getNode(),
@@ -3655,8 +3572,7 @@ export class Onlyoffice implements INodeType {
 										},
 									];
 									notify: boolean;
-									message: string;
-									culture: string;
+									culture?: string;
 								} = {
 									invitations: [
 										{
@@ -3664,13 +3580,14 @@ export class Onlyoffice implements INodeType {
 										},
 									],
 									notify,
-									message,
-									culture,
 								};
 								if (userId) {
 									shareBody.invitations[0].id = userId;
 								} else if (userEmail) {
 									shareBody.invitations[0].email = userEmail;
+								}
+								if (culture) {
+									shareBody.culture = culture;
 								}
 								const shareResponse = await docspaceJsonApiRequest.call(
 									this,
@@ -3711,15 +3628,16 @@ export class Onlyoffice implements INodeType {
 								const roomId = this.getNodeParameter('roomId', i, 0, {
 									extractValue: true,
 								}) as number;
-								const userId = this.getNodeParameter('userId', i, '', {
-									extractValue: true,
-								}) as string;
-								const userEmail = this.getNodeParameter('userEmail', i) as string;
-								const notify = this.getNodeParameter('notify', i) as boolean;
-								const message = this.getNodeParameter('message', i) as string;
-								const culture = this.getNodeParameter('culture', i, '', {
-									extractValue: true,
-								}) as string;
+								let userId: string | undefined;
+								try {
+									userId = this.getNodeParameter('userId', i, '', {
+										extractValue: true,
+									}) as string;
+								} catch {}
+								let userEmail: string | undefined;
+								try {
+									userEmail = this.getNodeParameter('userEmail', i) as string;
+								} catch {}
 								if (userId && userEmail) {
 									throw new NodeOperationError(
 										this.getNode(),
@@ -3771,18 +3689,12 @@ export class Onlyoffice implements INodeType {
 											access: number;
 										},
 									];
-									notify: boolean;
-									message: string;
-									culture: string;
 								} = {
 									invitations: [
 										{
 											access: 0,
 										},
 									],
-									notify,
-									message,
-									culture,
 								};
 								if (userId) {
 									removeBody.invitations[0].id = userId;
@@ -3862,6 +3774,92 @@ export class Onlyoffice implements INodeType {
 									body,
 								);
 								resultDataObject = response.body.response;
+								break;
+							}
+
+							case 'updateUser': {
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L311
+								const roomId = this.getNodeParameter('roomId', i, 0, {
+									extractValue: true,
+								}) as number;
+								let userId: string | undefined;
+								try {
+									userId = this.getNodeParameter('userId', i, '', {
+										extractValue: true,
+									}) as string;
+								} catch {}
+								let userEmail: string | undefined;
+								try {
+									userEmail = this.getNodeParameter('userEmail', i) as string;
+								} catch {}
+								const userAccess = this.getNodeParameter('userAccess', i, 0, {
+									extractValue: true,
+								}) as number;
+								if (!userId && !userEmail) {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Must provide either User ID or User Email',
+										{ itemIndex: i },
+									);
+								}
+								if (userId && userEmail) {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Must provide either User ID or User Email, not both',
+										{ itemIndex: i },
+									);
+								}
+								const shareBody: {
+									invitations: [
+										{
+											id?: string;
+											email?: string;
+											access: number;
+										},
+									];
+								} = {
+									invitations: [
+										{
+											access: userAccess,
+										},
+									],
+								};
+								if (userId) {
+									shareBody.invitations[0].id = userId;
+								} else if (userEmail) {
+									shareBody.invitations[0].email = userEmail;
+								}
+								const shareResponse = await docspaceJsonApiRequest.call(
+									this,
+									i,
+									'PUT',
+									`api/2.0/files/rooms/${roomId}/share`,
+									undefined,
+									shareBody,
+								);
+								if (userId) {
+									resultDataObject = shareResponse.body.response.members[0];
+								} else if (userEmail) {
+									const infoQuery: {
+										count: number;
+										filterBy: string;
+										filterOp: string;
+										filterValue: string;
+									} = {
+										count: 1,
+										filterBy: 'email',
+										filterOp: 'equals',
+										filterValue: userEmail,
+									};
+									const infoResponse = await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'GET',
+										`api/2.0/files/rooms/${roomId}/share`,
+										infoQuery,
+									);
+									resultDataObject = infoResponse.body.response[0];
+								}
 								break;
 							}
 
@@ -3950,14 +3948,27 @@ export class Onlyoffice implements INodeType {
 										'api/2.0/people/@self',
 									);
 								} else {
-									const userId = this.getNodeParameter('userId', i, '', {
-										extractValue: true,
-									}) as string;
-									const email = this.getNodeParameter('email', i) as string;
-									if (userId && email) {
+									let userId: string | undefined;
+									try {
+										userId = this.getNodeParameter('userId', i, '', {
+											extractValue: true,
+										}) as string;
+									} catch {}
+									let userEmail: string | undefined;
+									try {
+										userEmail = this.getNodeParameter('userEmail', i) as string;
+									} catch {}
+									if (!userId && !userEmail) {
 										throw new NodeOperationError(
 											this.getNode(),
-											'Must provide either id or email, not both',
+											'Must provide either User ID or User Email',
+											{ itemIndex: i },
+										);
+									}
+									if (userId && userEmail) {
+										throw new NodeOperationError(
+											this.getNode(),
+											'Must provide either User ID or User Email, not both',
 											{ itemIndex: i },
 										);
 									}
@@ -3968,9 +3979,9 @@ export class Onlyoffice implements INodeType {
 											'GET',
 											`api/2.0/people/${userId}`,
 										);
-									} else if (email) {
+									} else if (userEmail) {
 										const query = {
-											email,
+											email: userEmail,
 										};
 										response = await docspaceJsonApiRequest.call(
 											this,
