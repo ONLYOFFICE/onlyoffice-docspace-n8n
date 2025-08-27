@@ -13,26 +13,25 @@ export class OnlyofficeOAuth2Api implements ICredentialType {
 
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Base URL',
-			name: 'baseUrl',
-			type: 'string',
-			default: '',
-			description: 'The base URL of your ONLYOFFICE DocSpace portal',
-			placeholder: 'https://yourportal.onlyoffice.com',
-			required: true,
-		},
-		{
 			displayName: 'Grant Type',
 			name: 'grantType',
 			type: 'hidden',
 			default: 'authorizationCode',
 		},
 		{
+			displayName: 'Authorization Base URL',
+			name: 'authBaseUrl',
+			type: 'string',
+			default: 'https://oauth.onlyoffice.com',
+			description: 'The base URL of your ONLYOFFICE DocSpace authorization service',
+			required: true,
+		},
+		{
 			displayName: 'Authorization URL',
 			name: 'authUrl',
 			type: 'hidden',
 			default:
-				'={{$self["baseUrl"].endsWith("/") ? $self["baseUrl"].slice(0, -1) : $self["baseUrl"]}}/oauth2/authorize',
+				'={{$self["authBaseUrl"].endsWith("/") ? $self["authBaseUrl"].slice(0, -1) : $self["authBaseUrl"]}}/oauth2/authorize',
 			required: true,
 		},
 		{
@@ -40,7 +39,7 @@ export class OnlyofficeOAuth2Api implements ICredentialType {
 			name: 'accessTokenUrl',
 			type: 'hidden',
 			default:
-				'={{$self["baseUrl"].endsWith("/") ? $self["baseUrl"].slice(0, -1) : $self["baseUrl"]}}/oauth2/token',
+				'={{$self["authBaseUrl"].endsWith("/") ? $self["authBaseUrl"].slice(0, -1) : $self["authBaseUrl"]}}/oauth2/token',
 			required: true,
 		},
 		{

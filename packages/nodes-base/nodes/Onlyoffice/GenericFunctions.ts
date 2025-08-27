@@ -1,4 +1,6 @@
+import jwt, { type JwtPayload } from 'jsonwebtoken';
 import type {
+	ICredentialDataDecryptedObject,
 	IDataObject,
 	IExecuteFunctions,
 	IHookFunctions,
@@ -6,6 +8,8 @@ import type {
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
+
+import type { OAuth2CredentialData } from '../../../@n8n/client-oauth2';
 
 function docspaceResolveCredentialsType(
 	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
@@ -25,6 +29,44 @@ function docspaceResolveCredentialsType(
 	}
 }
 
+function docspaceResolveBaseUrl(
+	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
+	credentials: ICredentialDataDecryptedObject,
+): string {
+	if ('baseUrl' in credentials) {
+		return credentials.baseUrl as string;
+	}
+	if ('oauthTokenData' in credentials) {
+		const oauthTokenData = credentials.oauthTokenData as Exclude<
+			OAuth2CredentialData['oauthTokenData'],
+			undefined
+		>;
+		const payload = jwt.decode(oauthTokenData.access_token) as JwtPayload;
+		if (!payload.aud) {
+			throw new NodeOperationError(
+				this.getNode(),
+				'The base URL is not found in the token payload',
+			);
+		}
+		if (typeof payload.aud !== 'string') {
+			throw new NodeOperationError(
+				this.getNode(),
+				'The base URL in the token payload is not a string',
+			);
+		}
+		try {
+			const url = new URL(payload.aud);
+			return url.toString();
+		} catch {
+			throw new NodeOperationError(
+				this.getNode(),
+				'The base URL in the token payload is not a valid URL',
+			);
+		}
+	}
+	throw new NodeOperationError(this.getNode(), 'The base URL is not found in the credentials');
+}
+
 export async function docspaceBufferApiRequest(
 	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
 	i: number,
@@ -34,7 +76,7 @@ export async function docspaceBufferApiRequest(
 	const authentication = this.getNodeParameter('authentication', i) as string;
 	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
-	const baseUrl = credentials.baseUrl as string;
+	const baseUrl = docspaceResolveBaseUrl.call(this, credentials);
 	const headers: IDataObject = {
 		Accept: 'application/octet-stream',
 		'User-Agent': 'n8n',
@@ -64,7 +106,7 @@ export async function docspaceFormDataApiRequest(
 	const authentication = this.getNodeParameter('authentication', i) as string;
 	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
-	const baseUrl = credentials.baseUrl as string;
+	const baseUrl = docspaceResolveBaseUrl.call(this, credentials);
 	const headers: IDataObject = {
 		Accept: 'application/json',
 		'User-Agent': 'n8n',
@@ -96,7 +138,7 @@ export async function docspaceJsonApiRequest(
 	const authentication = this.getNodeParameter('authentication', i) as string;
 	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
-	const baseUrl = credentials.baseUrl as string;
+	const baseUrl = docspaceResolveBaseUrl.call(this, credentials);
 	const headers: IDataObject = {
 		Accept: 'application/json',
 		'User-Agent': 'n8n',

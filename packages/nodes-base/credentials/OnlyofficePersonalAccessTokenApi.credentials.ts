@@ -49,5 +49,15 @@ export class OnlyofficePersonalAccessTokenApi implements ICredentialType {
 			url: 'api/2.0/authentication',
 			baseURL: '={{$credentials?.baseUrl}}',
 		},
+		rules: [
+			{
+				type: 'responseSuccessBody',
+				properties: {
+					key: 'response',
+					value: false,
+					message: 'Invalid Personal Access Token',
+				},
+			},
+		],
 	};
 }

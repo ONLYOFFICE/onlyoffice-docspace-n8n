@@ -2869,26 +2869,33 @@ export class Onlyoffice implements INodeType {
 								resultDataObject = infoResponse.body;
 								let extension: string | undefined;
 								if (asText) {
-									const settingsResponse = await docspaceJsonApiRequest.call(
-										this,
-										i,
-										'GET',
-										'api/2.0/files/settings',
-									);
-									for (const item of settingsResponse.body.response.extsConvertible[
-										infoResponse.body.response.fileExst
-									]) {
-										if (item === '.csv' || item === '.txt') {
-											extension = item;
-											break;
-										}
-									}
-									if (!extension) {
-										throw new NodeOperationError(
-											this.getNode(),
-											'File could not be converted to text',
-											{ itemIndex: i },
+									if (
+										infoResponse.body.response.fileExst === '.csv' ||
+										infoResponse.body.response.fileExst === '.txt'
+									) {
+										extension = infoResponse.body.response.fileExst;
+									} else {
+										const settingsResponse = await docspaceJsonApiRequest.call(
+											this,
+											i,
+											'GET',
+											'api/2.0/files/settings',
 										);
+										for (const item of settingsResponse.body.response.extsConvertible[
+											infoResponse.body.response.fileExst
+										]) {
+											if (item === '.csv' || item === '.txt') {
+												extension = item;
+												break;
+											}
+										}
+										if (!extension) {
+											throw new NodeOperationError(
+												this.getNode(),
+												'File could not be converted to text',
+												{ itemIndex: i },
+											);
+										}
 									}
 								} else {
 									const outputFormat = this.getNodeParameter('outputFormat', i, '', {
