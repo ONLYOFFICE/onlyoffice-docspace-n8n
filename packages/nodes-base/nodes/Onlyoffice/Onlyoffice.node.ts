@@ -3101,7 +3101,7 @@ export class Onlyoffice implements INodeType {
 										sessionBody.fileName = binaryData.fileName;
 									}
 									mimeType = binaryData.mimeType;
-									buffer = binaryDataBuffer;
+									buffer = new Uint8Array(binaryDataBuffer);
 								} else {
 									const fileName = this.getNodeParameter('fileName', i) as string;
 									const fileContent = this.getNodeParameter('fileContent', i) as string;
