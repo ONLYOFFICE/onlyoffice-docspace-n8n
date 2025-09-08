@@ -9,11 +9,11 @@ import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { docspaceJsonApiRequest } from './GenericFunctions';
 
-export class OnlyofficeTrigger implements INodeType {
+export class OnlyofficeDocspaceTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'ONLYOFFICE DocSpace Trigger',
-		name: 'onlyofficeTrigger',
-		icon: 'file:onlyoffice.svg',
+		name: 'onlyofficeDocspaceTrigger',
+		icon: 'file:onlyofficeDocspace.svg',
 		iconColor: 'orange',
 		group: ['trigger'],
 		description: 'Starts the workflow when ONLYOFFICE DocSpace events occur',

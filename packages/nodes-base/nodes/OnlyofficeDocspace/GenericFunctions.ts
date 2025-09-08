@@ -9,7 +9,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
-import type { OAuth2CredentialData } from '../../../@n8n/client-oauth2';
+import type { OAuth2CredentialData } from '../../../@n8n/client-oauth2/dist';
 
 function docspaceResolveCredentialsType(
 	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,

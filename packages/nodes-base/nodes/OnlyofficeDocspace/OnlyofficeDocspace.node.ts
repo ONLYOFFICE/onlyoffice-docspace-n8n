@@ -99,11 +99,11 @@ const virtualDataRoomInvitationAccessLevels = [
 	roomInvitationAccessLevels[6],
 ];
 
-export class Onlyoffice implements INodeType {
+export class OnlyofficeDocspace implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'ONLYOFFICE DocSpace',
-		name: 'onlyoffice',
-		icon: 'file:onlyoffice.svg',
+		name: 'onlyofficeDocspace',
+		icon: 'file:onlyofficeDocspace.svg',
 		iconColor: 'orange',
 		group: ['input'],
 		description: 'Consume ONLYOFFICE DocSpace API',
