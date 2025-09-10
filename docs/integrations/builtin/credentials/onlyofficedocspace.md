@@ -74,7 +74,6 @@ Refer to [ONLYOFFICE DocSpace API: Basic Authentication](https://api.onlyoffice.
 
 To configure this credential, you'll need:
 
-- A **Base URL** of your ONLYOFFICE DocSpace portal.
 - A **Client ID** of the application registered in your ONLYOFFICE DocSpace portal.
 - A **Client Secret** associated with the application registered in your ONLYOFFICE DocSpace portal.
 
@@ -107,8 +106,7 @@ To configure this credential, you'll need:
 3. In your n8n instance, navigate to the credentials form and paste the client ID into the **Client ID** field.
 4. Back in your ONLYOFFICE DocSpace portal, copy the **Client Secret** from your application.
 5. In your n8n instance, paste the client secret into the **Client Secret** field.
-6. Enter the **Base URL** of your ONLYOFFICE DocSpace portal (for example, `https://yourportal.onlyoffice.com`).
-7. Click the **Save** button to save your credentials.
+6. Click the **Save** button to save your credentials.
 
 ### Related resources
 
