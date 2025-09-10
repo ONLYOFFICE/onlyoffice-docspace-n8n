@@ -83,6 +83,22 @@ Enter these parameters:
 
 - **Is My Documents**: Toggle to get the information of your My Documents section. This parameter is mutually exclusive with the **Folder ID** parameter.
 
+## Get the history of a folder
+
+Use this operation to get the history of a folder in the portal.
+
+Enter these parameters:
+
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
+- **Resource**: Select **Folder**.
+- **Operation**: Select **Get Folder History**.
+- **Folder ID**: Enter the ID of the folder you want to get the history for.
+
+### Options
+
+- **From Date**: Enter the start date to filter the history of the folder. The date must be in ISO 8601 format.
+- **To Date**: Enter the end date to filter the history of the folder. The date must be in ISO 8601 format.
+
 ## Get the link of a folder
 
 Use this operation to get the link of a folder in the portal.
