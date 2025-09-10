@@ -2,14 +2,14 @@ import type { ICredentialType, INodeProperties } from 'n8n-workflow';
 
 const scopes: string[] = ['files:read', 'files:write', 'rooms:read', 'rooms:write'];
 
-export class OnlyofficeOAuth2Api implements ICredentialType {
-	name = 'onlyofficeOAuth2Api';
+export class OnlyofficeDocspaceOAuth2Api implements ICredentialType {
+	name = 'onlyofficeDocspaceOAuth2Api';
 
 	extends = ['oAuth2Api'];
 
 	displayName = 'ONLYOFFICE DocSpace OAuth2 API';
 
-	documentationUrl = 'onlyoffice';
+	documentationUrl = 'onlyofficeDocspace';
 
 	properties: INodeProperties[] = [
 		{

@@ -5,12 +5,12 @@ import type {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class OnlyofficePersonalAccessTokenApi implements ICredentialType {
-	name = 'onlyofficePersonalAccessTokenApi';
+export class OnlyofficeDocspaceBasicAuthApi implements ICredentialType {
+	name = 'onlyofficeDocspaceBasicAuthApi';
 
-	displayName = 'ONLYOFFICE DocSpace Personal Access Token API';
+	displayName = 'ONLYOFFICE DocSpace Basic Authentication API';
 
-	documentationUrl = 'onlyoffice';
+	documentationUrl = 'onlyofficeDocspace';
 
 	properties: INodeProperties[] = [
 		{
@@ -23,14 +23,22 @@ export class OnlyofficePersonalAccessTokenApi implements ICredentialType {
 			required: true,
 		},
 		{
-			displayName: 'Personal Access Token',
-			name: 'personalAccessToken',
+			displayName: 'Email',
+			name: 'email',
+			type: 'string',
+			default: '',
+			description: 'The email for your ONLYOFFICE DocSpace portal',
+			required: true,
+		},
+		{
+			displayName: 'Password',
+			name: 'password',
 			type: 'string',
 			typeOptions: {
 				password: true,
 			},
 			default: '',
-			description: 'The personal access token for your ONLYOFFICE DocSpace portal',
+			description: 'The password for your ONLYOFFICE DocSpace portal',
 			required: true,
 		},
 	];
@@ -38,8 +46,9 @@ export class OnlyofficePersonalAccessTokenApi implements ICredentialType {
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
-			headers: {
-				Authorization: '={{$credentials?.personalAccessToken}}',
+			auth: {
+				username: '={{$credentials?.email}}',
+				password: '={{$credentials?.password}}',
 			},
 		},
 	};
@@ -55,7 +64,7 @@ export class OnlyofficePersonalAccessTokenApi implements ICredentialType {
 				properties: {
 					key: 'response',
 					value: false,
-					message: 'Invalid Personal Access Token',
+					message: 'Invalid email or password',
 				},
 			},
 		],

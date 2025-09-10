@@ -17,13 +17,13 @@ function docspaceResolveCredentialsType(
 ): string {
 	switch (authentication) {
 		case 'apiKey':
-			return 'onlyofficeApiKeyApi';
+			return 'onlyofficeDocspaceApiKeyApi';
 		case 'basicAuth':
-			return 'onlyofficeBasicAuthApi';
+			return 'onlyofficeDocspaceBasicAuthApi';
 		case 'oAuth2':
-			return 'onlyofficeOAuth2Api';
+			return 'onlyofficeDocspaceOAuth2Api';
 		case 'personalAccessToken':
-			return 'onlyofficePersonalAccessTokenApi';
+			return 'onlyofficeDocspacePersonalAccessTokenApi';
 		default:
 			throw new NodeOperationError(this.getNode(), `Unknown authentication ${authentication}`);
 	}

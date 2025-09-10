@@ -5,12 +5,12 @@ import type {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class OnlyofficeApiKeyApi implements ICredentialType {
-	name = 'onlyofficeApiKeyApi';
+export class OnlyofficeDocspaceApiKeyApi implements ICredentialType {
+	name = 'onlyofficeDocspaceApiKeyApi';
 
 	displayName = 'ONLYOFFICE DocSpace API Key API';
 
-	documentationUrl = 'onlyoffice';
+	documentationUrl = 'onlyofficeDocspace';
 
 	properties: INodeProperties[] = [
 		{

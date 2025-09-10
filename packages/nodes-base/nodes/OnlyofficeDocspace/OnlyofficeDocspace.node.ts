@@ -2329,7 +2329,7 @@ export class OnlyofficeDocspace implements INodeType {
 
 		credentials: [
 			{
-				name: 'onlyofficeApiKeyApi',
+				name: 'onlyofficeDocspaceApiKeyApi',
 				required: true,
 				displayOptions: {
 					show: {
@@ -2338,7 +2338,7 @@ export class OnlyofficeDocspace implements INodeType {
 				},
 			},
 			{
-				name: 'onlyofficeBasicAuthApi',
+				name: 'onlyofficeDocspaceBasicAuthApi',
 				required: true,
 				displayOptions: {
 					show: {
@@ -2347,7 +2347,7 @@ export class OnlyofficeDocspace implements INodeType {
 				},
 			},
 			{
-				name: 'onlyofficeOAuth2Api',
+				name: 'onlyofficeDocspaceOAuth2Api',
 				required: true,
 				displayOptions: {
 					show: {
@@ -2356,7 +2356,7 @@ export class OnlyofficeDocspace implements INodeType {
 				},
 			},
 			{
-				name: 'onlyofficePersonalAccessTokenApi',
+				name: 'onlyofficeDocspacePersonalAccessTokenApi',
 				required: true,
 				displayOptions: {
 					show: {
