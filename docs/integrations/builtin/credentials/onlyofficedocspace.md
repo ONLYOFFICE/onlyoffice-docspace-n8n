@@ -1,16 +1,16 @@
 ---
 #https://www.notion.so/n8n/Frontmatter-432c2b8dff1f43d4b1c8d20075510fe4
-title: ONLYOFFICE credentials
-description: Documentation for ONLYOFFICE credentials. Use these credentials to authenticate ONLYOFFICE in n8n, a workflow automation platform.
+title: ONLYOFFICE DocSpace credentials
+description: Documentation for ONLYOFFICE DocSpace credentials. Use these credentials to authenticate ONLYOFFICE in n8n, a workflow automation platform.
 contentType: [integration, reference]
 ---
 
-# ONLYOFFICE credentials
+# ONLYOFFICE DocSpace credentials
 
 You can use these credentials to authenticate the following nodes:
 
-- [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/index.md)
-- [ONLYOFFICE DocSpace Trigger](/integrations/builtin/trigger-nodes/n8n-nodes-base.onlyofficetrigger.md)
+- [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/index.md)
+- [ONLYOFFICE DocSpace Trigger](/integrations/builtin/trigger-nodes/n8n-nodes-base.onlyofficedocspacetrigger.md)
 
 ## Prerequisites
 

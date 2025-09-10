@@ -454,11 +454,11 @@ nav:
         - Okta: integrations/builtin/app-nodes/n8n-nodes-base.okta.md
         - One Simple API: integrations/builtin/app-nodes/n8n-nodes-base.onesimpleapi.md
         - ONLYOFFICE DocSpace:
-          - ONLYOFFICE DocSpace: integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/index.md
-          - File operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/file-operations.md
-          - Folder operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/folder-operations.md
-          - Room operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/room-operations.md
-          - User operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/user-operations.md
+          - ONLYOFFICE DocSpace: integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/index.md
+          - File operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/file-operations.md
+          - Folder operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/folder-operations.md
+          - Room operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/room-operations.md
+          - User operations: integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/user-operations.md
         - Onfleet: integrations/builtin/app-nodes/n8n-nodes-base.onfleet.md
         - OpenAI:
           - OpenAI: integrations/builtin/app-nodes/n8n-nodes-langchain.openai/index.md
@@ -974,7 +974,7 @@ nav:
         - integrations/builtin/credentials/ollama.md
         - integrations/builtin/credentials/onesimpleapi.md
         - integrations/builtin/credentials/onfleet.md
-        - integrations/builtin/credentials/onlyoffice.md
+        - integrations/builtin/credentials/onlyofficedocspace.md
         - integrations/builtin/credentials/openai.md
         - integrations/builtin/credentials/opencti.md
         - integrations/builtin/credentials/openrouter.md

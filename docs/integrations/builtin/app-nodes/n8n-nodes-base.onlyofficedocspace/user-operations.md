@@ -7,7 +7,7 @@ contentType: [integration, reference]
 
 # ONLYOFFICE DocSpace User operations
 
-Use this operation to manage users in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/index.md) for more information on the ONLYOFFICE DocSpace node itself.
+Use this operation to manage users in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/index.md) for more information on the ONLYOFFICE DocSpace node itself.
 
 ## Delete a user
 
@@ -15,7 +15,7 @@ Use this operation to delete a user from the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Delete User**.
 - **User ID**: Enter the ID of the user you want to delete.
@@ -28,7 +28,7 @@ Use this operation to disable a user in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Disable User**.
 - **User ID**: Enter the ID of the user you want to disable.
@@ -41,7 +41,7 @@ Use this operation to enable a user in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Enable User**.
 - **User ID**: Enter the ID of the user you want to enable.
@@ -54,7 +54,7 @@ Use this operation to get information about a user in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Get User Info**.
 - **User ID**: Enter the ID of the user you want to get information about. This parameter is mutually exclusive with the **Is Me** and **User Email** parameters.
@@ -72,7 +72,7 @@ Use this operation to invite a user to the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Invite User**.
 - **Type**: Select the type of the user you want to invite.
@@ -90,7 +90,7 @@ Use this operation to search for a user in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Search User**.
 - **Query**: Enter the search query to use for finding the user. Leave empty to return all users that can be accessed in the portal.
@@ -101,7 +101,7 @@ Use this operation to update a user in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **User**.
 - **Operation**: Select **Update User**.
 - **User ID**: Enter the ID of the user you want to update.

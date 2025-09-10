@@ -7,7 +7,7 @@ contentType: [integration, reference]
 
 # ONLYOFFICE DocSpace Folder operations
 
-Use this operation to manage folders in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/index.md) for more information on the ONLYOFFICE DocSpace node itself.
+Use this operation to manage folders in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/index.md) for more information on the ONLYOFFICE DocSpace node itself.
 
 ## Copy a folder
 
@@ -15,7 +15,7 @@ Use this operation to copy a folder to the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Copy Folder**.
 - **Folder ID**: Enter the ID of the folder you want to copy.
@@ -31,7 +31,7 @@ Use this operation to create a new folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Create Folder**.
 - **Parent ID**: Enter the ID of the room or folder where you want to create the folder. This parameter is mutually exclusive with the **In My Documents** parameter.
@@ -47,7 +47,7 @@ Use this operation to delete a folder from the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Delete Folder**.
 - **Folder ID**: Enter the ID of the folder you want to delete.
@@ -58,7 +58,7 @@ Use this operation to get the contents of a folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Get Folder Contents**.
 - **Folder ID**: Enter the ID of the folder you want to get the contents of. This parameter is mutually exclusive with the **Is My Documents** parameter.
@@ -74,7 +74,7 @@ Use this operation to get the information of a folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Get Folder Info**.
 - **Folder ID**: Enter the ID of the folder you want to get the information of. This parameter is mutually exclusive with the **Is My Documents** parameter.
@@ -89,7 +89,7 @@ Use this operation to get the link of a folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Get Folder Link**.
 - **Folder ID**: Enter the ID of the folder you want to get the link for.
@@ -100,7 +100,7 @@ Use this operation to move a folder to another room or folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Move Folder**.
 - **Folder ID**: Enter the ID of the folder you want to move.
@@ -116,7 +116,7 @@ Use this operation to update a folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Folder**.
 - **Operation**: Select **Update Folder**.
 - **Folder ID**: Enter the ID of the folder you want to update.

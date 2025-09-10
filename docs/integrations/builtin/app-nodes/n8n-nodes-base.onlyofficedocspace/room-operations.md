@@ -7,7 +7,7 @@ contentType: [integration, reference]
 
 # ONLYOFFICE DocSpace Room operations
 
-Use this operation to manage rooms in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/index.md) for more information on the ONLYOFFICE DocSpace node itself.
+Use this operation to manage rooms in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/index.md) for more information on the ONLYOFFICE DocSpace node itself.
 
 ## Archive a room
 
@@ -15,7 +15,7 @@ Use this operation to archive a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Archive Room**.
 - **Room ID**: Enter the ID of the room you want to archive.
@@ -28,7 +28,7 @@ Use this operation to create a new room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Create Room**.
 - **Title**: Enter the title of the room you want to create.
@@ -40,7 +40,7 @@ Use this operation to get information about a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Get Room Info**.
 - **Room ID**: Enter the ID of the room you want to get information about.
@@ -53,7 +53,7 @@ Use this operation to get the link to a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Get Room Link**.
 - **Room ID**: Enter the ID of the room you want to get the link for.
@@ -66,7 +66,7 @@ Use this operation to invite a user to a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Invite User**.
 - **Room ID**: Enter the ID of the room you want to invite a user to.
@@ -93,7 +93,7 @@ Use this operation to remove a user from a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Remove User**.
 - **Room ID**: Enter the ID of the room you want to remove a user from.
@@ -113,7 +113,7 @@ Use this operation to search for a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Search Room**.
 - **Query**: Enter the search query to use for finding the room. Leave empty to return all rooms that can be accessed in the portal.
@@ -124,7 +124,7 @@ Use this operation to search for a user in a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Search User**.
 - **Room ID**: Enter the ID of the room you want to search for a user in.
@@ -138,7 +138,7 @@ Use this operation to update a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Update Room**.
 - **Room ID**: Enter the ID of the room you want to update.
@@ -152,7 +152,7 @@ Use this operation to update a user in a room in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **Room**.
 - **Operation**: Select **Update User**.
 - **Room ID**: Enter the ID of the room where you want to update a user.

@@ -7,7 +7,7 @@ contentType: [integration, reference]
 
 # ONLYOFFICE DocSpace File operations
 
-Use this operation to manage files in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyoffice/index.md) for more information on the ONLYOFFICE DocSpace node itself.
+Use this operation to manage files in ONLYOFFICE DocSpace. Refer to [ONLYOFFICE DocSpace](/integrations/builtin/app-nodes/n8n-nodes-base.onlyofficedocspace/index.md) for more information on the ONLYOFFICE DocSpace node itself.
 
 ## Copy a file
 
@@ -15,7 +15,7 @@ Use this operation to copy a file to the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Copy File**.
 - **File ID**: Enter the ID of the file you want to copy.
@@ -31,7 +31,7 @@ Use this operation to create an empty file in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Create File**.
 - **Parent ID**: Enter the ID of the room or folder where you want to create the file. This parameter is mutually exclusive with the **In My Documents** parameter.
@@ -48,7 +48,7 @@ Use this operation to delete a file from the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Delete File**.
 - **File ID**: Enter the ID of the file you want to delete.
@@ -59,7 +59,7 @@ Use this operation to download a file from the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Download File**.
 - **File ID**: Enter the ID of the file you want to download.
@@ -78,7 +78,7 @@ Use this operation to get the information about a file in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Get File Info**.
 - **File ID**: Enter the ID of the file you want to get information about.
@@ -89,7 +89,7 @@ Use this operation to get the link to a file in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Get File Link**.
 - **File ID**: Enter the ID of the file you want to get the link for.
@@ -100,7 +100,7 @@ Use this operation to move a file to another room or folder in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Move File**.
 - **File ID**: Enter the ID of the file you want to move.
@@ -116,7 +116,7 @@ Use this operation to update a file in the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Update File**.
 - **File ID**: Enter the ID of the file you want to update.
@@ -128,7 +128,7 @@ Use this operation to upload a file to the portal.
 
 Enter these parameters:
 
-- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyoffice.md).
+- **Credential to connect with**: Create or select an existing [ONLYOFFICE DocSpace credentials](/integrations/builtin/credentials/onlyofficedocspace.md).
 - **Resource**: Select **File**.
 - **Operation**: Select **Upload File**.
 - **Parent ID**: Enter the ID of the room or folder where you want to upload the file. This parameter is mutually exclusive with the **To My Documents** parameter.

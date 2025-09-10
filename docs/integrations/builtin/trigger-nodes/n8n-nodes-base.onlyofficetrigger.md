@@ -10,7 +10,7 @@ contentType: [integration, reference]
 [ONLYOFFICE DocSpace](https://www.onlyoffice.com/docspace.aspx){:target=_blank .external-link} is a room-based collaborative platform which allows organizing a clear file structure depending on users' needs or project goals.
 
 /// note | Credentials
-You can find authentication information for this node [here](/integrations/builtin/credentials/onlyoffice.md).
+You can find authentication information for this node [here](/integrations/builtin/credentials/onlyofficedocspace.md).
 ///
 
 ## Events
