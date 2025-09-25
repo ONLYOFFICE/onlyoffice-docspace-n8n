@@ -2787,10 +2787,12 @@ export class OnlyofficeDocspace implements INodeType {
 								const copyBody: {
 									fileIds: number[];
 									destFolderId: number;
+									conflictResolveType: string;
 									deleteAfter: boolean;
 								} = {
 									fileIds: [fileId],
 									destFolderId,
+									conflictResolveType: 'Duplicate',
 									deleteAfter: false,
 								};
 								const copyResponse = await docspaceJsonApiRequest.call(
@@ -2801,15 +2803,12 @@ export class OnlyofficeDocspace implements INodeType {
 									undefined,
 									copyBody,
 								);
-								await docspaceResolveAsyncApiResponse.call(this, i, copyResponse.body);
-								// todo: return info of the copied file
-								const infoResponse = await docspaceJsonApiRequest.call(
+								const resolved = await docspaceResolveAsyncApiResponse.call(
 									this,
 									i,
-									'GET',
-									`api/2.0/files/file/${fileId}`,
+									copyResponse.body,
 								);
-								resultDataObject = infoResponse.body.response;
+								resultDataObject = resolved[0].files[0];
 								break;
 							}
 
@@ -2920,11 +2919,9 @@ export class OnlyofficeDocspace implements INodeType {
 								let extension: string | undefined;
 								if (asText) {
 									if (
-										infoResponse.body.response.fileExst === '.csv' ||
-										infoResponse.body.response.fileExst === '.txt'
+										infoResponse.body.response.fileExst !== '.csv' &&
+										infoResponse.body.response.fileExst !== '.txt'
 									) {
-										extension = infoResponse.body.response.fileExst;
-									} else {
 										const settingsResponse = await docspaceJsonApiRequest.call(
 											this,
 											i,
@@ -3053,10 +3050,12 @@ export class OnlyofficeDocspace implements INodeType {
 								const moveBody: {
 									fileIds: number[];
 									destFolderId: number;
+									conflictResolveType: string;
 									deleteAfter: boolean;
 								} = {
 									fileIds: [fileId],
 									destFolderId,
+									conflictResolveType: 'Duplicate',
 									deleteAfter: false,
 								};
 								const moveResponse = await docspaceJsonApiRequest.call(
@@ -3067,14 +3066,12 @@ export class OnlyofficeDocspace implements INodeType {
 									undefined,
 									moveBody,
 								);
-								await docspaceResolveAsyncApiResponse.call(this, i, moveResponse.body);
-								const infoResponse = await docspaceJsonApiRequest.call(
+								const resolved = await docspaceResolveAsyncApiResponse.call(
 									this,
 									i,
-									'GET',
-									`api/2.0/files/file/${fileId}`,
+									moveResponse.body,
 								);
-								resultDataObject = infoResponse.body.response;
+								resultDataObject = resolved[0].files[0];
 								break;
 							}
 
