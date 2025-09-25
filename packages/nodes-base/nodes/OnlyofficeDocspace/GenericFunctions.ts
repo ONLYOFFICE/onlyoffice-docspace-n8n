@@ -11,7 +11,7 @@ import { NodeOperationError } from 'n8n-workflow';
 
 import type { OAuth2CredentialData } from '../../../@n8n/client-oauth2/dist';
 
-function docspaceResolveCredentialsType(
+export function docspaceResolveCredentialsType(
 	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
 	authentication: string,
 ): string {
@@ -29,42 +29,53 @@ function docspaceResolveCredentialsType(
 	}
 }
 
-function docspaceResolveBaseUrl(
+export function docspaceResolveBaseUrl(
 	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
+	credentialsType: string,
 	credentials: ICredentialDataDecryptedObject,
 ): string {
-	if ('baseUrl' in credentials) {
-		return credentials.baseUrl as string;
-	}
-	if ('oauthTokenData' in credentials) {
-		const oauthTokenData = credentials.oauthTokenData as Exclude<
-			OAuth2CredentialData['oauthTokenData'],
-			undefined
-		>;
-		const payload = jwt.decode(oauthTokenData.access_token) as JwtPayload;
-		if (!payload.aud) {
-			throw new NodeOperationError(
-				this.getNode(),
-				'The base URL is not found in the token payload',
-			);
+	let baseUrl: unknown;
+	switch (credentialsType) {
+		case 'onlyofficeDocspaceApiKeyApi': {
+			baseUrl = credentials.baseUrl;
+			break;
 		}
-		if (typeof payload.aud !== 'string') {
-			throw new NodeOperationError(
-				this.getNode(),
-				'The base URL in the token payload is not a string',
-			);
+		case 'onlyofficeDocspaceBasicAuthApi': {
+			baseUrl = credentials.baseUrl;
+			break;
 		}
-		try {
-			const url = new URL(payload.aud);
-			return url.toString();
-		} catch {
-			throw new NodeOperationError(
-				this.getNode(),
-				'The base URL in the token payload is not a valid URL',
-			);
+		case 'onlyofficeDocspaceOAuth2Api': {
+			const oauthTokenData = credentials.oauthTokenData as Exclude<
+				OAuth2CredentialData['oauthTokenData'],
+				undefined
+			>;
+			const payload = jwt.decode(oauthTokenData.access_token) as JwtPayload;
+			baseUrl = payload.aud;
+			break;
+		}
+		case 'onlyofficeDocspacePersonalAccessTokenApi': {
+			baseUrl = credentials.baseUrl;
+			break;
+		}
+		default: {
+			throw new NodeOperationError(this.getNode(), `Unknown credentials type ${credentialsType}`);
 		}
 	}
-	throw new NodeOperationError(this.getNode(), 'The base URL is not found in the credentials');
+	if (!baseUrl) {
+		throw new NodeOperationError(this.getNode(), 'No base URL configured');
+	}
+	if (typeof baseUrl !== 'string') {
+		throw new NodeOperationError(
+			this.getNode(),
+			`Expected base URL to be a string, got ${typeof baseUrl}`,
+		);
+	}
+	try {
+		const url = new URL(baseUrl);
+		return url.toString();
+	} catch {
+		throw new NodeOperationError(this.getNode(), `Invalid base URL: ${baseUrl}`);
+	}
 }
 
 export async function docspaceBufferApiRequest(
@@ -75,15 +86,12 @@ export async function docspaceBufferApiRequest(
 ): Promise<any> {
 	const authentication = this.getNodeParameter('authentication', i) as string;
 	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
-	const credentials = await this.getCredentials(credentialsType, i);
-	const baseUrl = docspaceResolveBaseUrl.call(this, credentials);
 	const headers: IDataObject = {
 		Accept: 'application/octet-stream',
 		'User-Agent': 'n8n',
 	};
 	const requestOptions: IHttpRequestOptions = {
 		url,
-		baseURL: baseUrl,
 		method,
 		encoding: 'arraybuffer',
 		returnFullResponse: true,
@@ -106,7 +114,7 @@ export async function docspaceFormDataApiRequest(
 	const authentication = this.getNodeParameter('authentication', i) as string;
 	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
-	const baseUrl = docspaceResolveBaseUrl.call(this, credentials);
+	const baseUrl = docspaceResolveBaseUrl.call(this, credentialsType, credentials);
 	const headers: IDataObject = {
 		Accept: 'application/json',
 		'User-Agent': 'n8n',
@@ -138,7 +146,7 @@ export async function docspaceJsonApiRequest(
 	const authentication = this.getNodeParameter('authentication', i) as string;
 	const credentialsType = docspaceResolveCredentialsType.call(this, authentication);
 	const credentials = await this.getCredentials(credentialsType, i);
-	const baseUrl = docspaceResolveBaseUrl.call(this, credentials);
+	const baseUrl = docspaceResolveBaseUrl.call(this, credentialsType, credentials);
 	const headers: IDataObject = {
 		Accept: 'application/json',
 		'User-Agent': 'n8n',
@@ -174,7 +182,7 @@ export async function docspaceResolveAsyncApiResponse(
 	const DELAY = 100;
 	const operations: any[] = [];
 	if (Array.isArray(data.response)) {
-		operations.push(...data.response);
+		operations.push.apply(operations, data.response);
 	} else {
 		operations.push(data.response);
 	}
@@ -196,7 +204,7 @@ export async function docspaceResolveAsyncApiResponse(
 		throw new NodeOperationError(this.getNode(), `Errors in operations: ${errors}`);
 	}
 	if (finished === operations.length) {
-		return { response: operations };
+		return operations;
 	}
 	for (let attempt = 0; attempt < ATTEMPTS; attempt++) {
 		const response = await docspaceJsonApiRequest.call(this, i, 'GET', 'api/2.0/files/fileops');

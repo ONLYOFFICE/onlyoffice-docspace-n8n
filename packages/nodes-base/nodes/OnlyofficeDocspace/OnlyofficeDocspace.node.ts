@@ -2386,24 +2386,24 @@ export class OnlyofficeDocspace implements INodeType {
 					);
 					switch (response.body.response.roomType) {
 						case 1:
-							levels.push(...formFillingRoomInvitationAccessLevels);
+							levels.push.apply(levels, formFillingRoomInvitationAccessLevels);
 							break;
 						case 2:
-							levels.push(...collaborationRoomInvitationAccessLevels);
+							levels.push.apply(levels, collaborationRoomInvitationAccessLevels);
 							break;
 						case 5:
-							levels.push(...customRoomInvitationAccessLevels);
+							levels.push.apply(levels, customRoomInvitationAccessLevels);
 							break;
 						case 6:
-							levels.push(...publicRoomInvitationAccessLevels);
+							levels.push.apply(levels, publicRoomInvitationAccessLevels);
 							break;
 						case 8:
-							levels.push(...virtualDataRoomInvitationAccessLevels);
+							levels.push.apply(levels, virtualDataRoomInvitationAccessLevels);
 							break;
 					}
 				}
 				if (levels.length === 0) {
-					levels.push(...roomInvitationAccessLevels);
+					levels.push.apply(levels, roomInvitationAccessLevels);
 				}
 				if (filter) {
 					for (const level of levels) {
@@ -2412,7 +2412,7 @@ export class OnlyofficeDocspace implements INodeType {
 						}
 					}
 				} else {
-					results.push(...levels);
+					results.push.apply(results, levels);
 				}
 				const result: INodeListSearchResult = {
 					results,
@@ -2802,6 +2802,7 @@ export class OnlyofficeDocspace implements INodeType {
 									copyBody,
 								);
 								await docspaceResolveAsyncApiResponse.call(this, i, copyResponse.body);
+								// todo: return info of the copied file
 								const infoResponse = await docspaceJsonApiRequest.call(
 									this,
 									i,
@@ -2915,7 +2916,7 @@ export class OnlyofficeDocspace implements INodeType {
 									'GET',
 									`api/2.0/files/file/${fileId}`,
 								);
-								resultDataObject = infoResponse.body;
+								resultDataObject = infoResponse.body.response;
 								let extension: string | undefined;
 								if (asText) {
 									if (
@@ -4250,7 +4251,7 @@ export class OnlyofficeDocspace implements INodeType {
 					executionData,
 					executionOptions,
 				);
-				returnData.push(...executionMetaData);
+				returnData.push.apply(returnData, executionMetaData);
 			}
 		}
 
