@@ -3244,10 +3244,12 @@ export class OnlyofficeDocspace implements INodeType {
 								const copyBody: {
 									folderIds: number[];
 									destFolderId: number;
+									conflictResolveType: string;
 									deleteAfter: boolean;
 								} = {
 									folderIds: [folderId],
 									destFolderId,
+									conflictResolveType: 'Duplicate',
 									deleteAfter: false,
 								};
 								const copyResponse = await docspaceJsonApiRequest.call(
@@ -3258,14 +3260,12 @@ export class OnlyofficeDocspace implements INodeType {
 									undefined,
 									copyBody,
 								);
-								await docspaceResolveAsyncApiResponse.call(this, i, copyResponse.body);
-								const infoResponse = await docspaceJsonApiRequest.call(
+								const resolved = await docspaceResolveAsyncApiResponse.call(
 									this,
 									i,
-									'GET',
-									`api/2.0/files/folder/${folderId}`,
+									copyResponse.body,
 								);
-								resultDataObject = infoResponse.body;
+								resultDataObject = resolved[0].folders[0];
 								break;
 							}
 
@@ -3464,10 +3464,12 @@ export class OnlyofficeDocspace implements INodeType {
 								const moveBody: {
 									folderIds: number[];
 									destFolderId: number;
+									conflictResolveType: string;
 									deleteAfter: boolean;
 								} = {
 									folderIds: [folderId],
 									destFolderId,
+									conflictResolveType: 'Duplicate',
 									deleteAfter: false,
 								};
 								const moveResponse = await docspaceJsonApiRequest.call(
@@ -3478,14 +3480,12 @@ export class OnlyofficeDocspace implements INodeType {
 									undefined,
 									moveBody,
 								);
-								await docspaceResolveAsyncApiResponse.call(this, i, moveResponse.body);
-								const infoResponse = await docspaceJsonApiRequest.call(
+								const resolved = await docspaceResolveAsyncApiResponse.call(
 									this,
 									i,
-									'GET',
-									`api/2.0/files/folder/${folderId}`,
+									moveResponse.body,
 								);
-								resultDataObject = infoResponse.body.response;
+								resultDataObject = resolved[0].folders[0];
 								break;
 							}
 
