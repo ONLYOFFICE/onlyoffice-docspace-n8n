@@ -274,14 +274,14 @@ export class OnlyofficeDocspace implements INodeType {
 						action: 'Get the contents of a folder',
 					},
 					{
-						name: 'Get Folder Info',
-						value: 'getFolderInfo',
-						action: 'Get the info of a folder',
-					},
-					{
 						name: 'Get Folder History',
 						value: 'getFolderHistory',
 						action: 'Get the history of a folder',
+					},
+					{
+						name: 'Get Folder Info',
+						value: 'getFolderInfo',
+						action: 'Get the info of a folder',
 					},
 					{
 						name: 'Get Folder Link',
@@ -3614,11 +3614,15 @@ export class OnlyofficeDocspace implements INodeType {
 									userId = this.getNodeParameter('userId', i, '', {
 										extractValue: true,
 									}) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								let userEmail: string | undefined;
 								try {
 									userEmail = this.getNodeParameter('userEmail', i) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								const userAccess = this.getNodeParameter('userAccess', i, 0, {
 									extractValue: true,
 								}) as number;
@@ -3628,7 +3632,9 @@ export class OnlyofficeDocspace implements INodeType {
 									culture = this.getNodeParameter('culture', i, '', {
 										extractValue: true,
 									}) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								if (!userId && !userEmail) {
 									throw new NodeOperationError(
 										this.getNode(),
@@ -3713,11 +3719,15 @@ export class OnlyofficeDocspace implements INodeType {
 									userId = this.getNodeParameter('userId', i, '', {
 										extractValue: true,
 									}) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								let userEmail: string | undefined;
 								try {
 									userEmail = this.getNodeParameter('userEmail', i) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								if (userId && userEmail) {
 									throw new NodeOperationError(
 										this.getNode(),
@@ -3867,11 +3877,15 @@ export class OnlyofficeDocspace implements INodeType {
 									userId = this.getNodeParameter('userId', i, '', {
 										extractValue: true,
 									}) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								let userEmail: string | undefined;
 								try {
 									userEmail = this.getNodeParameter('userEmail', i) as string;
-								} catch {}
+								} catch {
+									// do nothing
+								}
 								const userAccess = this.getNodeParameter('userAccess', i, 0, {
 									extractValue: true,
 								}) as number;
@@ -4033,11 +4047,15 @@ export class OnlyofficeDocspace implements INodeType {
 										userId = this.getNodeParameter('userId', i, '', {
 											extractValue: true,
 										}) as string;
-									} catch {}
+									} catch {
+										// do nothing
+									}
 									let userEmail: string | undefined;
 									try {
 										userEmail = this.getNodeParameter('userEmail', i) as string;
-									} catch {}
+									} catch {
+										// do nothing
+									}
 									if (!userId && !userEmail) {
 										throw new NodeOperationError(
 											this.getNode(),

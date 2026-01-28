@@ -1,4 +1,9 @@
-import jwt, { type JwtPayload } from 'jsonwebtoken';
+// These functions were written as part of the core n8n repository, so they
+// follow the same patterns used in other n8n plugins, including the use of any.
+// While removing any is not feasible in the current implementation, it would be
+// a worthwhile improvement in future.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type {
 	ICredentialDataDecryptedObject,
 	IDataObject,
@@ -7,9 +12,30 @@ import type {
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
-import { NodeOperationError } from 'n8n-workflow';
+import { NodeOperationError, sleep } from 'n8n-workflow';
 
-import type { OAuth2CredentialData } from '../../../@n8n/client-oauth2/dist';
+type Jwt = {
+	header: object;
+	payload: {
+		aud: string;
+	};
+	signature: string;
+};
+
+function decodeJwt(token: string): Jwt {
+	const parts = token.split('.');
+	if (parts.length !== 3) {
+		throw new Error('Invalid JWT format');
+	}
+	const header = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf8'));
+	const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+	const object: Jwt = {
+		header,
+		payload,
+		signature: parts[2],
+	};
+	return object;
+}
 
 export function docspaceResolveCredentialsType(
 	this: IExecuteFunctions | IHookFunctions | ILoadOptionsFunctions,
@@ -45,12 +71,9 @@ export function docspaceResolveBaseUrl(
 			break;
 		}
 		case 'onlyofficeDocspaceOAuth2Api': {
-			const oauthTokenData = credentials.oauthTokenData as Exclude<
-				OAuth2CredentialData['oauthTokenData'],
-				undefined
-			>;
-			const payload = jwt.decode(oauthTokenData.access_token) as JwtPayload;
-			baseUrl = payload.aud;
+			const oauthTokenData = credentials.oauthTokenData as any;
+			const token = decodeJwt(oauthTokenData.access_token);
+			baseUrl = token.payload.aud;
 			break;
 		}
 		case 'onlyofficeDocspacePersonalAccessTokenApi': {
@@ -234,7 +257,7 @@ export async function docspaceResolveAsyncApiResponse(
 			return operations;
 		}
 		if (attempt !== 19) {
-			await new Promise((resolve) => setTimeout(resolve, DELAY));
+			await sleep(DELAY);
 		}
 	}
 	throw new NodeOperationError(this.getNode(), 'Timeout waiting for operations to finish');
