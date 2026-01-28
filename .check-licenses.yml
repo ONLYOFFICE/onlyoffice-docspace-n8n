@@ -1,0 +1,27 @@
+- - :approve
+  - "@n8n/errors"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/eslint-plugin-community-nodes"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/node-cli"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - n8n-workflow
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
