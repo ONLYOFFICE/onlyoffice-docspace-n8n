@@ -5,12 +5,16 @@ import type {
 	INodeProperties,
 } from 'n8n-workflow';
 
-export class OnlyofficeDocspacePersonalAccessTokenApi implements ICredentialType {
-	name = 'onlyofficeDocspacePersonalAccessTokenApi';
+export class OnlyofficeDocspaceBasicAuthApi implements ICredentialType {
+	name = 'onlyofficeDocspaceBasicAuthApi';
 
-	displayName = 'ONLYOFFICE DocSpace Personal Access Token API';
+	displayName = 'ONLYOFFICE DocSpace Basic Authentication API';
 
-	documentationUrl = 'onlyofficeDocspace';
+	// @ts-expect-error Wrong type inference.
+	icon = 'file:../nodes/OnlyofficeDocspace/onlyofficeDocspace.svg';
+
+	documentationUrl =
+		'https://github.com/onlyoffice/onlyoffice-docspace-n8n/blob/master/docs/credentials/README.md#using-basic-auth';
 
 	properties: INodeProperties[] = [
 		{
@@ -23,14 +27,22 @@ export class OnlyofficeDocspacePersonalAccessTokenApi implements ICredentialType
 			required: true,
 		},
 		{
-			displayName: 'Personal Access Token',
-			name: 'personalAccessToken',
+			displayName: 'Email',
+			name: 'email',
+			type: 'string',
+			default: '',
+			description: 'The email for your ONLYOFFICE DocSpace portal',
+			required: true,
+		},
+		{
+			displayName: 'Password',
+			name: 'password',
 			type: 'string',
 			typeOptions: {
 				password: true,
 			},
 			default: '',
-			description: 'The personal access token for your ONLYOFFICE DocSpace portal',
+			description: 'The password for your ONLYOFFICE DocSpace portal',
 			required: true,
 		},
 	];
@@ -38,8 +50,9 @@ export class OnlyofficeDocspacePersonalAccessTokenApi implements ICredentialType
 	authenticate: IAuthenticateGeneric = {
 		type: 'generic',
 		properties: {
-			headers: {
-				Authorization: '={{$credentials?.personalAccessToken}}',
+			auth: {
+				username: '={{$credentials?.email}}',
+				password: '={{$credentials?.password}}',
 			},
 		},
 	};
@@ -55,7 +68,7 @@ export class OnlyofficeDocspacePersonalAccessTokenApi implements ICredentialType
 				properties: {
 					key: 'response',
 					value: false,
-					message: 'Invalid Personal Access Token',
+					message: 'Invalid email or password',
 				},
 			},
 		],

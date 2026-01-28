@@ -10,7 +10,11 @@ export class OnlyofficeDocspaceApiKeyApi implements ICredentialType {
 
 	displayName = 'ONLYOFFICE DocSpace API Key API';
 
-	documentationUrl = 'onlyofficeDocspace';
+	// @ts-expect-error Wrong type inference.
+	icon = 'file:../nodes/OnlyofficeDocspace/onlyofficeDocspace.svg';
+
+	documentationUrl =
+		'https://github.com/onlyoffice/onlyoffice-docspace-n8n/blob/master/docs/credentials/README.md#using-api-key';
 
 	properties: INodeProperties[] = [
 		{
