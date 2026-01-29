@@ -1,0 +1,58 @@
+{
+	"name": "@onlyoffice/n8n-nodes-docspace",
+	"version": "0.1.0",
+	"description": "n8n nodes for ONLYOFFICE DocSpace",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n-nodes",
+		"n8n",
+		"onlyoffice-docspace",
+		"onlyoffice"
+	],
+	"homepage": "https://github.com/onlyoffice/onlyoffice-docspace-n8n/",
+	"bugs": {
+		"url": "https://github.com/onlyoffice/onlyoffice-docspace-n8n/issues/",
+		"email": "support@onlyoffice.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/onlyoffice/onlyoffice-docspace-n8n.git"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "Ascensio System SIA",
+		"email": "integration@onlyoffice.com",
+		"url": "https://onlyoffice.com/"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "n8n-node build",
+		"dev": "n8n-node dev",
+		"format": "prettier --write .",
+		"lint": "n8n-node lint"
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.18.0",
+		"@types/node": "25.0.10",
+		"eslint": "9.32.0",
+		"n8n-workflow": "2.4.3",
+		"prettier": "3.6.2",
+		"typescript": "5.9.2"
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/OnlyofficeDocspaceApiKeyApi.credentials.js",
+			"dist/credentials/OnlyofficeDocspaceBasicAuthApi.credentials.js",
+			"dist/credentials/OnlyofficeDocspaceOAuth2Api.credentials.js",
+			"dist/credentials/OnlyofficeDocspacePersonalAccessTokenApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/OnlyofficeDocspace/OnlyofficeDocspace.node.js",
+			"dist/nodes/OnlyofficeDocspace/OnlyofficeDocspaceTrigger.node.js"
+		]
+	}
+}

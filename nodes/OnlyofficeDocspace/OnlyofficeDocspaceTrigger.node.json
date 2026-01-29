@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-onlyofficeDocspaceTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data & Storage"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/onlyoffice/onlyoffice-docspace-n8n/blob/master/docs/credentials/README.md"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/onlyoffice/onlyoffice-docspace-n8n/blob/master/docs/trigger-node/README.md"
+			}
+		]
+	}
+}

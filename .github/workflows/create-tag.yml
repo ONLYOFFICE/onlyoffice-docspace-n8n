@@ -1,0 +1,31 @@
+name: Create Tag
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - package.json
+  workflow_dispatch:
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup GitHub Actions Bot
+        uses: vanyauhalin/action-gh-bot@v0
+
+      - name: Store Version
+        id: version
+        run: echo "version=$(jq --raw-output ".version" package.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Create Tag
+        run: git tag "v${{steps.version.outputs.version}}"
+
+      - name: Publish Tag
+        run: git push origin "v${{steps.version.outputs.version}}"
