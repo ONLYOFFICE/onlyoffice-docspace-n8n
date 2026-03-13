@@ -333,8 +333,8 @@ export class OnlyofficeDocspace implements INodeType {
 					},
 					{
 						name: 'Get Room Link',
-						value: 'getRoomLink',
-						action: 'Get the link of a room',
+						value: 'getRoomSharedLink',
+						action: 'Get the shared link of a room',
 					},
 					{
 						name: 'Invite User',
@@ -1358,7 +1358,7 @@ export class OnlyofficeDocspace implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
-			/*                              room:getRoomLink                              */
+			/*                              room:getRoomSharedLink                              */
 			/* -------------------------------------------------------------------------- */
 			{
 				displayName: 'Room ID',
@@ -1368,11 +1368,11 @@ export class OnlyofficeDocspace implements INodeType {
 					mode: 'list',
 					value: '',
 				},
-				description: 'The ID of the room to get the link for',
+				description: 'The ID of the room to get the shared link for',
 				displayOptions: {
 					show: {
 						resource: ['room'],
-						operation: ['getRoomLink'],
+						operation: ['getRoomSharedLink'],
 					},
 				},
 				required: true,
@@ -3589,7 +3589,7 @@ export class OnlyofficeDocspace implements INodeType {
 								break;
 							}
 
-							case 'getRoomLink': {
+							case 'getRoomSharedLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L424
 								const roomId = this.getNodeParameter('roomId', i, '', {
 									extractValue: true,
