@@ -216,9 +216,9 @@ export class OnlyofficeDocspace implements INodeType {
 						action: 'Get the info of a file',
 					},
 					{
-						name: 'Get File Link',
-						value: 'getFileLink',
-						action: 'Get the link of a file',
+						name: 'Get File Shared Link',
+						value: 'getFileSharedLink',
+						action: 'Get the shared link of a file',
 					},
 					{
 						name: 'Move File',
@@ -668,18 +668,18 @@ export class OnlyofficeDocspace implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
-			/*                              file:getFileLink                              */
+			/*                              file:getFileSharedLink                              */
 			/* -------------------------------------------------------------------------- */
 			{
 				displayName: 'File ID',
 				name: 'fileId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the file to get the link for',
+				description: 'The ID of the file to get the shared link for',
 				displayOptions: {
 					show: {
 						resource: ['file'],
-						operation: ['getFileLink'],
+						operation: ['getFileSharedLink'],
 					},
 				},
 				required: true,
@@ -3011,7 +3011,7 @@ export class OnlyofficeDocspace implements INodeType {
 								break;
 							}
 
-							case 'getFileLink': {
+							case 'getFileSharedLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L445
 								const fileId = this.getNodeParameter('fileId', i) as number;
 								const response = await docspaceJsonApiRequest.call(
