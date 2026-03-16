@@ -1286,7 +1286,7 @@ export class OnlyofficeDocspace implements INodeType {
 						description: 'Upload PDF forms into the room',
 					},
 					{
-						name: 'Editing Room',
+						name: 'Collaboration Room',
 						value: 2,
 						description: 'Collaborate on one or multiple documents with your team',
 					},
