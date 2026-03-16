@@ -216,9 +216,9 @@ export class OnlyofficeDocspace implements INodeType {
 						action: 'Get the info of a file',
 					},
 					{
-						name: 'Get File Link',
-						value: 'getFileLink',
-						action: 'Get the link of a file',
+						name: 'Get File Shared Link',
+						value: 'getFileSharedLink',
+						action: 'Get the shared link of a file',
 					},
 					{
 						name: 'Move File',
@@ -285,8 +285,8 @@ export class OnlyofficeDocspace implements INodeType {
 					},
 					{
 						name: 'Get Folder Link',
-						value: 'getFolderLink',
-						action: 'Get the link of a folder',
+						value: 'getFolderSharedLink',
+						action: 'Get the shared link of a folder',
 					},
 					{
 						name: 'Move Folder',
@@ -333,8 +333,8 @@ export class OnlyofficeDocspace implements INodeType {
 					},
 					{
 						name: 'Get Room Link',
-						value: 'getRoomLink',
-						action: 'Get the link of a room',
+						value: 'getRoomSharedLink',
+						action: 'Get the shared link of a room',
 					},
 					{
 						name: 'Invite User',
@@ -668,18 +668,18 @@ export class OnlyofficeDocspace implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
-			/*                              file:getFileLink                              */
+			/*                              file:getFileSharedLink                              */
 			/* -------------------------------------------------------------------------- */
 			{
 				displayName: 'File ID',
 				name: 'fileId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the file to get the link for',
+				description: 'The ID of the file to get the shared link for',
 				displayOptions: {
 					show: {
 						resource: ['file'],
-						operation: ['getFileLink'],
+						operation: ['getFileSharedLink'],
 					},
 				},
 				required: true,
@@ -1108,18 +1108,18 @@ export class OnlyofficeDocspace implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
-			/*                            folder:getFolderLink                            */
+			/*                            folder:getFolderSharedLink                            */
 			/* -------------------------------------------------------------------------- */
 			{
 				displayName: 'Folder ID',
 				name: 'folderId',
 				type: 'number',
 				default: 0,
-				description: 'The ID of the folder to get the link for',
+				description: 'The ID of the folder to get the shared link for',
 				displayOptions: {
 					show: {
 						resource: ['folder'],
-						operation: ['getFolderLink'],
+						operation: ['getFolderSharedLink'],
 					},
 				},
 				required: true,
@@ -1358,7 +1358,7 @@ export class OnlyofficeDocspace implements INodeType {
 			},
 
 			/* -------------------------------------------------------------------------- */
-			/*                              room:getRoomLink                              */
+			/*                              room:getRoomSharedLink                              */
 			/* -------------------------------------------------------------------------- */
 			{
 				displayName: 'Room ID',
@@ -1368,11 +1368,11 @@ export class OnlyofficeDocspace implements INodeType {
 					mode: 'list',
 					value: '',
 				},
-				description: 'The ID of the room to get the link for',
+				description: 'The ID of the room to get the shared link for',
 				displayOptions: {
 					show: {
 						resource: ['room'],
-						operation: ['getRoomLink'],
+						operation: ['getRoomSharedLink'],
 					},
 				},
 				required: true,
@@ -3011,7 +3011,7 @@ export class OnlyofficeDocspace implements INodeType {
 								break;
 							}
 
-							case 'getFileLink': {
+							case 'getFileSharedLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FilesController.cs/#L445
 								const fileId = this.getNodeParameter('fileId', i) as number;
 								const response = await docspaceJsonApiRequest.call(
@@ -3425,7 +3425,7 @@ export class OnlyofficeDocspace implements INodeType {
 								break;
 							}
 
-							case 'getFolderLink': {
+							case 'getFolderSharedLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/FoldersController.cs/#L287
 								const folderId = this.getNodeParameter('folderId', i) as number;
 								const response = await docspaceJsonApiRequest.call(
@@ -3589,7 +3589,7 @@ export class OnlyofficeDocspace implements INodeType {
 								break;
 							}
 
-							case 'getRoomLink': {
+							case 'getRoomSharedLink': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.0.4-server/products/ASC.Files/Server/Api/VirtualRoomsController.cs/#L424
 								const roomId = this.getNodeParameter('roomId', i, '', {
 									extractValue: true,
