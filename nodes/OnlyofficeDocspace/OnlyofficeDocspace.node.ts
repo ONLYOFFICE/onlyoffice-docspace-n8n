@@ -284,7 +284,7 @@ export class OnlyofficeDocspace implements INodeType {
 						action: 'Get the info of a folder',
 					},
 					{
-						name: 'Get Folder Link',
+						name: 'Get Folder Shared Link',
 						value: 'getFolderSharedLink',
 						action: 'Get the shared link of a folder',
 					},
@@ -332,7 +332,7 @@ export class OnlyofficeDocspace implements INodeType {
 						action: 'Get the info of a room',
 					},
 					{
-						name: 'Get Room Link',
+						name: 'Get Room Shared Link',
 						value: 'getRoomSharedLink',
 						action: 'Get the shared link of a room',
 					},
