@@ -332,7 +332,7 @@ export class OnlyofficeDocspace implements INodeType {
 						action: 'Get the info of a room',
 					},
 					{
-						name: 'Get Room Link',
+						name: 'Get Room Shared Link',
 						value: 'getRoomSharedLink',
 						action: 'Get the shared link of a room',
 					},
