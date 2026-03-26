@@ -95,17 +95,17 @@ Enter these parameters:
 - **Operation**: Select **Get File Info**.
 - **File ID**: Enter the ID of the file you want to get information about.
 
-## Get the link of a file
+## Get the shared link of a file
 
-Use this operation to get the link to a file in the portal.
+Use this operation to get the shared link of a file in the portal.
 
 Enter these parameters:
 
 - **Credential to connect with**: Create or select an existing [ONLYOFFICE
   DocSpace credentials][Credentials].
 - **Resource**: Select **File**.
-- **Operation**: Select **Get File Link**.
-- **File ID**: Enter the ID of the file you want to get the link for.
+- **Operation**: Select **Get File Shared Link**.
+- **File ID**: Enter the ID of the file you want to get the shared link for.
 
 ## Move a file
 

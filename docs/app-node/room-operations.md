@@ -46,17 +46,17 @@ Enter these parameters:
     in the portal.
   - Select **Manual** to enter the ID of the room manually.
 
-## Get the link of a room
+## Get the shared link of a room
 
-Use this operation to get the link to a room in the portal.
+Use this operation to get the shared link of a room in the portal.
 
 Enter these parameters:
 
 - **Credential to connect with**: Create or select an existing [ONLYOFFICE
   DocSpace credentials][Credentials].
 - **Resource**: Select **Room**.
-- **Operation**: Select **Get Room Link**.
-- **Room ID**: Enter the ID of the room you want to get the link for.
+- **Operation**: Select **Get Room Shared Link**.
+- **Room ID**: Enter the ID of the room you want to get the shared link for.
   - Select **From List** to choose the room from the rooms that can be shared in
     the portal.
   - Select **Manual** to enter the ID of the room manually.
