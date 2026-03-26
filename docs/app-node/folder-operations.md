@@ -114,17 +114,17 @@ Enter these parameters:
 - **To Date**: Enter the end date to filter the history of the folder. The date
   must be in ISO 8601 format.
 
-## Get the link of a folder
+## Get the shared link of a folder
 
-Use this operation to get the link of a folder in the portal.
+Use this operation to get the shared link of a folder in the portal.
 
 Enter these parameters:
 
 - **Credential to connect with**: Create or select an existing [ONLYOFFICE
   DocSpace credentials][Credentials].
 - **Resource**: Select **Folder**.
-- **Operation**: Select **Get Folder Link**.
-- **Folder ID**: Enter the ID of the folder you want to get the link for.
+- **Operation**: Select **Get Folder Shared Link**.
+- **Folder ID**: Enter the ID of the folder you want to get the shared link for.
 
 ## Move a folder
 
