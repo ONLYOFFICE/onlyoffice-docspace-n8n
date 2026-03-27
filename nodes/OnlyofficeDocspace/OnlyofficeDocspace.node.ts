@@ -4171,26 +4171,142 @@ export class OnlyofficeDocspace implements INodeType {
 
 							case 'updateUser': {
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L890
+								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L1894
 								// https://github.com/ONLYOFFICE/DocSpace-server/blob/v3.1.0-server/products/ASC.People/Server/Api/UserController.cs/#L1941
 								const userId = this.getNodeParameter('userId', i, '', {
 									extractValue: true,
 								}) as string;
 								const type = this.getNodeParameter('type', i) as number;
 								if (type) {
-									const body: {
-										userIds: string[],
-									} = {
-										userIds: [userId],
-									};
-									await docspaceJsonApiRequest.call(
+									const selfResponse = await docspaceJsonApiRequest.call(
 										this,
 										i,
-										'PUT',
-										`api/2.0/people/type/${type}`,
-										undefined,
-										body,
+										'GET',
+										'api/2.0/people/@self',
 									);
-									// todo: sync
+									let selfEmployeeType: number | undefined;
+									switch (true) {
+										case selfResponse.body.response.isOwner:
+											selfEmployeeType = 0;
+											break;
+										case selfResponse.body.response.isAdmin:
+											selfEmployeeType = 3;
+											break;
+										case selfResponse.body.response.isRoomAdmin:
+											selfEmployeeType = 1;
+											break;
+										case selfResponse.body.response.isCollaborator:
+											selfEmployeeType = 4;
+											break;
+										case selfResponse.body.response.isVisitor:
+											selfEmployeeType = 2;
+											break;
+										default:
+											throw new NodeOperationError(
+												this.getNode(),
+												'Unknown employee type of current user',
+												{ itemIndex: i },
+											);
+									}
+									const targetResponse = await docspaceJsonApiRequest.call(
+										this,
+										i,
+										'GET',
+										`api/2.0/people/${userId}`,
+									);
+									let targetEmployeeType: number | undefined;
+									switch (true) {
+										case targetResponse.body.response.isOwner:
+											targetEmployeeType = 0;
+											break;
+										case targetResponse.body.response.isAdmin:
+											targetEmployeeType = 3;
+											break;
+										case targetResponse.body.response.isRoomAdmin:
+											targetEmployeeType = 1;
+											break;
+										case targetResponse.body.response.isCollaborator:
+											targetEmployeeType = 4;
+											break;
+										case targetResponse.body.response.isVisitor:
+											targetEmployeeType = 2;
+											break;
+										default:
+											throw new NodeOperationError(
+												this.getNode(),
+												`Unknown employee type of user ${userId}`,
+												{ itemIndex: i },
+											);
+									}
+									let method: 'POST' | 'PUT' | undefined;
+									switch (true) {
+										case selfEmployeeType === 0 && targetEmployeeType === 1 && type === 2:
+										case selfEmployeeType === 0 && targetEmployeeType === 1 && type === 4:
+										case selfEmployeeType === 0 && targetEmployeeType === 3 && type === 2:
+										case selfEmployeeType === 0 && targetEmployeeType === 3 && type === 4:
+										case selfEmployeeType === 0 && targetEmployeeType === 4 && type === 2:
+										case selfEmployeeType === 3 && targetEmployeeType === 1 && type === 2:
+										case selfEmployeeType === 3 && targetEmployeeType === 1 && type === 4:
+										case selfEmployeeType === 3 && targetEmployeeType === 4 && type === 2:
+											method = 'POST';
+											break;
+										case selfEmployeeType === 0 && targetEmployeeType === 1 && type === 3:
+										case selfEmployeeType === 0 && targetEmployeeType === 2 && type === 1:
+										case selfEmployeeType === 0 && targetEmployeeType === 2 && type === 3:
+										case selfEmployeeType === 0 && targetEmployeeType === 2 && type === 4:
+										case selfEmployeeType === 0 && targetEmployeeType === 3 && type === 1:
+										case selfEmployeeType === 0 && targetEmployeeType === 4 && type === 1:
+										case selfEmployeeType === 0 && targetEmployeeType === 4 && type === 3:
+										case selfEmployeeType === 1 && targetEmployeeType === 2 && type === 4:
+										case selfEmployeeType === 3 && targetEmployeeType === 2 && type === 1:
+										case selfEmployeeType === 3 && targetEmployeeType === 2 && type === 4:
+										case selfEmployeeType === 3 && targetEmployeeType === 4 && type === 1:
+											method = 'PUT';
+											break;
+										default:
+											throw new NodeOperationError(
+												this.getNode(),
+												'Insufficient permissions or unsupported employee type transition',
+												{ itemIndex: i },
+											);
+									}
+									switch (method) {
+										case 'POST': {
+											const body: {
+												type: number,
+												userId: string,
+											} = {
+												type,
+												userId,
+											};
+											await docspaceJsonApiRequest.call(
+												this,
+												i,
+												'POST',
+												'api/2.0/people/type',
+												undefined,
+												body,
+											);
+											// todo: sync
+											break;
+										}
+										case 'PUT': {
+											const body: {
+												userIds: string[];
+											} = {
+												userIds: [userId],
+											};
+											await docspaceJsonApiRequest.call(
+												this,
+												i,
+												'PUT',
+												`api/2.0/people/type/${type}`,
+												undefined,
+												body,
+											);
+											break;
+										}
+									}
 								}
 								const response = await docspaceJsonApiRequest.call(
 									this,
