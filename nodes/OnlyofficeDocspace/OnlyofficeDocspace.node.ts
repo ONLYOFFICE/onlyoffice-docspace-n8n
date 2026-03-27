@@ -4177,15 +4177,16 @@ export class OnlyofficeDocspace implements INodeType {
 								}) as string;
 								const type = this.getNodeParameter('type', i) as number;
 								if (type) {
-									const body = {
-										type,
-										userId,
+									const body: {
+										userIds: string[],
+									} = {
+										userIds: [userId],
 									};
 									await docspaceJsonApiRequest.call(
 										this,
 										i,
-										'POST',
-										'api/2.0/people/type',
+										'PUT',
+										`api/2.0/people/type/${type}`,
 										undefined,
 										body,
 									);
