@@ -44,10 +44,14 @@ export class OnlyofficeDocspaceTrigger implements INodeType {
 						name: 'Basic Auth',
 						value: 'basicAuth',
 					},
-					{
-						name: 'OAuth2',
-						value: 'oAuth2',
-					},
+					// Temporarily disable OAuth authorization for webhooks. Currently,
+					// the OAuth server does not issue tokens with the scopes that allow
+					// CRUD operations for webhooks. Wait until upstream implements this
+					// feature, then uncomment the lines below.
+					// {
+					// 	name: 'OAuth2',
+					// 	value: 'oAuth2',
+					// },
 					{
 						name: 'Personal Access Token',
 						value: 'personalAccessToken',
