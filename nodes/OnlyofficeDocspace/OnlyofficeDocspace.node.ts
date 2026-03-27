@@ -1281,7 +1281,7 @@ export class OnlyofficeDocspace implements INodeType {
 				},
 				options: [
 					{
-						name: 'Filling Forms Room',
+						name: 'Form Filling Room',
 						value: 1,
 						description: 'Upload PDF forms into the room',
 					},
