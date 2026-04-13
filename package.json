@@ -34,7 +34,7 @@
 		"lint": "n8n-node lint"
 	},
 	"devDependencies": {
-		"@n8n/node-cli": "0.18.0",
+		"@n8n/node-cli": "0.23.1",
 		"@types/node": "25.0.10",
 		"eslint": "9.32.0",
 		"n8n-workflow": "2.4.3",
