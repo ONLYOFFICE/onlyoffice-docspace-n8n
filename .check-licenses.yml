@@ -1,4 +1,39 @@
 - - :approve
+  - "@browserbasehq/sdk"
+  - :who:
+    :why: https://github.com/browserbase/sdk-node/blob/main/LICENSE
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/ai-node-sdk"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/ai-utilities"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/config"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/di"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
   - "@n8n/errors"
   - :who:
     :why: https://docs.n8n.io/sustainable-use-license/
@@ -14,6 +49,13 @@
 
 - - :approve
   - "@n8n/node-cli"
+  - :who:
+    :why: https://docs.n8n.io/sustainable-use-license/
+    :versions: []
+    :when: 2026-01-29 00:00:00 Z
+
+- - :approve
+  - "@n8n/typescript-config"
   - :who:
     :why: https://docs.n8n.io/sustainable-use-license/
     :versions: []
