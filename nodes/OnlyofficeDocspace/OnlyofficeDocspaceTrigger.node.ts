@@ -10,6 +10,7 @@ import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { docspaceJsonApiRequest } from './GenericFunctions';
 
 export class OnlyofficeDocspaceTrigger implements INodeType {
+	// eslint-disable-next-line @n8n/community-nodes/require-node-description-fields
 	description: INodeTypeDescription = {
 		displayName: 'ONLYOFFICE DocSpace Trigger',
 		name: 'onlyofficeDocspaceTrigger',
