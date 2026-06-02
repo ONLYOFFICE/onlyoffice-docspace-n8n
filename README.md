@@ -13,7 +13,7 @@ ONLYOFFICE DocSpace is a room-based collaborative platform which allows organizi
 
 Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-### Community Nodes (Recommended)
+### Community nodes (recommended)
 
 1. Go to **Settings > Community Nodes** in your n8n instance
 2. Select **Install**
@@ -23,7 +23,7 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 After installing the node, you can use it like any other node. n8n displays the node in search results in the **Nodes** panel.
 
-### Manual Installation
+### Manual installation
 
 To get started install the package in your n8n root directory:
 
@@ -48,7 +48,7 @@ This package provides the following nodes:
 
 The ONLYOFFICE DocSpace node supports the following operations:
 
-### File Operations
+### File operations
 - Copy a file
 - Create a file
 - Delete a file
@@ -59,7 +59,7 @@ The ONLYOFFICE DocSpace node supports the following operations:
 - Update a file
 - Upload a file
 
-### Folder Operations
+### Folder operations
 - Copy a folder
 - Create a folder
 - Delete a folder
@@ -70,7 +70,7 @@ The ONLYOFFICE DocSpace node supports the following operations:
 - Move a folder
 - Update a folder
 
-### Room Operations
+### Room operations
 - Archive a room
 - Create a room
 - Get room info
@@ -82,7 +82,7 @@ The ONLYOFFICE DocSpace node supports the following operations:
 - Update a room
 - Update user in a room
 
-### User Operations
+### User operations
 - Delete a user
 - Disable a user
 - Enable a user
@@ -144,31 +144,33 @@ Detailed documentation is available in the [docs/] directory:
 - [ONLYOFFICE DocSpace Node Operations][App Node]
 - [ONLYOFFICE DocSpace Trigger Node][Trigger Node]
 
-## Resources
-
-- [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
-- [ONLYOFFICE DocSpace API Documentation](https://api.onlyoffice.com/docspace/)
-- [ONLYOFFICE DocSpace Help Center](https://helpcenter.onlyoffice.com/docspace/)
-
-## Support
-
-If you have any questions or need help, please:
-
-- Open an issue on [GitHub](https://github.com/onlyoffice/onlyoffice-docspace-n8n/issues)
-- Contact us at [support@onlyoffice.com](mailto:support@onlyoffice.com)
-
 ## License
 
 The ONLYOFFICE DocSpace n8n Nodes are distributed under the MIT license. See [LICENSE] for more information.
 
-## Version
+## Versions
 
 See [CHANGELOG.md] for version history and release notes.
+
+## Useful links & support
+
+| Resource | URL |
+|----------|-----|
+| ONLYOFFICE website | [onlyoffice.com](https://www.onlyoffice.com) |
+| ONLYOFFICE DocSpace | [onlyoffice.com/docspace](https://www.onlyoffice.com/docspace) |
+| n8n community nodes documentation | [docs.n8n.io](https://docs.n8n.io/integrations/community-nodes/) |
+| API documentation | [api.onlyoffice.com](https://api.onlyoffice.com/docspace/) |
+| Community forum | [community.onlyoffice.com](https://community.onlyoffice.com/) |
+| Help Center | [helpcenter.onlyoffice.com](https://helpcenter.onlyoffice.com/docspace/) |
+| Found a bug? | [Report an issue](https://github.com/ONLYOFFICE/onlyoffice-docspace-n8n/issues) |
+| Support email | [support@onlyoffice.com](mailto:support@onlyoffice.com) |
+
+<p align="center">Made with ❤️ by the ONLYOFFICE Team</p>
 
 <!-- Definitions -->
 
 [n8n]: https://n8n.io/
-[ONLYOFFICE DocSpace]: https://www.onlyoffice.com/docspace.aspx
+[ONLYOFFICE DocSpace]: https://www.onlyoffice.com/docspace
 [n8n Dockerfile]: https://github.com/n8n-io/n8n/blob/master/docker/images/n8n/Dockerfile
 [docs/]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/tree/master/docs/
 [Credentials]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/tree/master/docs/credentials/
