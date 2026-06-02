@@ -7,7 +7,7 @@ Changelog] format and adhering to [Semantic Versioning].
 
 There are no noticeable changes in version [unreleased].
 
-## [0.1.0] - 2026-06-02
+## [1.0.0] - 2026-06-02
 
 ### Added
 
@@ -88,7 +88,7 @@ There are no noticeable changes in version [unreleased].
 
 <!-- Definitions: Tags -->
 
-[Unreleased]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/compare/v0.1.0...HEAD/
-[0.1.0]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/releases/tag/v0.1.0
+[Unreleased]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/compare/v1.0.0...HEAD/
+[1.0.0]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/releases/tag/v1.0.0
 
 <!-- Definitions: Commits -->
