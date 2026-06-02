@@ -1,0 +1,52 @@
+# Source files
+credentials/
+nodes/
+*.ts
+!*.d.ts
+tsconfig.json
+
+# Development files
+.git/
+.github/
+.gitignore
+.prettierignore
+.prettierrc.js
+.check-licenses.yml
+eslint.config.mjs
+mise.toml
+
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Documentation (keep only essential docs)
+docs/
+
+# Build artifacts
+*.tsbuildinfo
+*.log
+*.map
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+test/
+tests/
+*.test.ts
+*.spec.ts
+coverage/
+
+# Misc
+.env
+.env.*
