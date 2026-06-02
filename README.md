@@ -91,7 +91,9 @@ The ONLYOFFICE DocSpace node supports the following operations:
 - Search for a user
 - Update a user
 
-### Events
+## Events
+
+The ONLYOFFICE DocSpace Trigger node supports the following webhook events:
 
 - All Events
 - User Created
