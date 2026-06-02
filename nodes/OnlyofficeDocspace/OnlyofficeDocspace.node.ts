@@ -4348,7 +4348,7 @@ export class OnlyofficeDocspace implements INodeType {
 						error: error.message,
 					};
 				} else {
-					throw error;
+					throw new NodeOperationError(this.getNode(), error.message, { itemIndex: i });
 				}
 			}
 
