@@ -95,7 +95,7 @@ jobs:
         run: |
           gh release create "v${{needs.build.outputs.version}}" \
             --title "v${{needs.build.outputs.version}}" \
-            --notes "See ${{github.server_url}}/${{github.repository}}/blob/main/CHANGELOG.md"
+            --notes "See ${{github.server_url}}/${{github.repository}}/blob/master/CHANGELOG.md"
 
       - name: Upload Package
         run: gh release upload "v${{needs.build.outputs.version}}" *.tgz
