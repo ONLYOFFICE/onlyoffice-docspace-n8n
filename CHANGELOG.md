@@ -5,7 +5,9 @@ Changelog] format and adhering to [Semantic Versioning].
 
 ## [Unreleased]
 
-There are no noticeable changes in version [unreleased].
+### Fixed
+
+- Wrap HTTP error in `NodeApiError`
 
 ## [1.0.0] - 2026-06-02
 
