@@ -42,3 +42,6 @@ jobs:
 
       - name: Lint Package
         run: pnpm lint
+
+      - name: Scan Community Package
+        run: npx @n8n/scan-community-package @onlyoffice/n8n-nodes-docspace
