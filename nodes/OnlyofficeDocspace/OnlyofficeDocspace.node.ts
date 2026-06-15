@@ -1,4 +1,4 @@
-import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import type {
 	IBinaryData,
 	IDataObject,
@@ -9,6 +9,7 @@ import type {
 	INodeListSearchResult,
 	INodeType,
 	INodeTypeDescription,
+	JsonObject,
 } from 'n8n-workflow';
 
 import {
@@ -4348,7 +4349,7 @@ export class OnlyofficeDocspace implements INodeType {
 						error: error.message,
 					};
 				} else {
-					throw new NodeOperationError(this.getNode(), error.message, { itemIndex: i });
+					throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 				}
 			}
 
