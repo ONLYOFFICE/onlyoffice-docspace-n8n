@@ -5,6 +5,10 @@ Changelog] format and adhering to [Semantic Versioning].
 
 ## [Unreleased]
 
+There are no noticeable changes in version [unreleased].
+
+## [1.0.1] - 2026-06-15
+
 ### Fixed
 
 - Wrap HTTP error in `NodeApiError`
@@ -90,7 +94,8 @@ Changelog] format and adhering to [Semantic Versioning].
 
 <!-- Definitions: Tags -->
 
-[Unreleased]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/compare/v1.0.0...HEAD/
+[Unreleased]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/compare/v1.0.1...HEAD/
+[1.0.1]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/onlyoffice/onlyoffice-docspace-n8n/releases/tag/v1.0.0
 
 <!-- Definitions: Commits -->
