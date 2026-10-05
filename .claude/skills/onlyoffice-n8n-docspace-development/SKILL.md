@@ -69,9 +69,9 @@ with `ERR_PNPM_IGNORED_BUILDS`). Not `pnpm dev` (separate n8n instance with a sc
 
 | Part                               | What |
 | ---------------------------------- | ---- |
-| `test/unit/*.test.ts`              | Both nodes, `listSearch`, credentials and `GenericFunctions` with a fake n8n context and a fake portal. `trigger.test.ts` follows the webhook lifecycle like n8n core: registration (`checkExists`, `create`, `delete`), the incoming request (body → one item, signature), the response (HEAD 200, `onReceived`) |
-| `test/unit/helpers.ts`             | `runNode({ params, routes, items?, continueOnFail? })` → `{ output, requests }`; `routes` maps `"METHOD url"` to the `response` of the answer or to a function returning the full answer (`reply(body, status)`); `finished()` is a finished `fileops` answer. One fake context serves execute, hook, load-options and webhook functions: `runHook(method, options)`, `runWebhook({ webhookName, body, headers }, params)` → `{ result, response }`, `runListSearch`, `genericContext`. Parameter defaults come from `displayOptions` like in n8n; `authentication` defaults to `basicAuth` |
-| `test/unit/webhook-payloads.ts`    | DocSpace deliveries (`FILE_CREATED`, `ROOM_CREATED`, `USER_INVITED`: `{ event, payload, webhook }`) and `signature(body, secret)` for `x-docspace-signature-256` |
+| `test/unit/*.test.ts`              | Both nodes, `listSearch`, credentials and `GenericFunctions` with a fake n8n context and a fake portal. `trigger.test.ts` follows the webhook lifecycle like n8n core: registration (`checkExists`, `create`, `delete`), the incoming request (a signed delivery → one item unchanged; no or a foreign signature → 401), the response (HEAD 200, `onReceived`) |
+| `test/unit/helpers.ts`             | `runNode({ params, routes, items?, continueOnFail? })` → `{ output, requests }`; `routes` maps `"METHOD url"` to the `response` of the answer or to a function returning the full answer (`reply(body, status)`); `finished()` is a finished `fileops` answer. One fake context serves execute, hook, load-options and webhook functions: `runHook(method, options)`, `runWebhook({ webhookName, body, headers }, params)` → `{ result, response }`, `runListSearch`, `genericContext`. Every request records `credentialsType` and `itemIndex` (the item the credentials were read for). Parameter defaults come from `displayOptions` like in n8n; `authentication` defaults to `basicAuth` |
+| `test/unit/webhook-payloads.ts`    | DocSpace deliveries (`FILE_CREATED`, `ROOM_CREATED`, `USER_INVITED`: `{ event, payload, webhook }`), `SECRET_KEY` and `signature(body, secret?)` for `x-docspace-signature-256`; the fake webhook context gives `JSON.stringify(body)` as `rawBody` |
 | `test/automation/workflows/*.json` | One workflow per area (files, upload/download, folders, rooms, users and auth, trigger): a chain of `@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace` nodes (credentials `dsBasicTestCred1`, `dsApiKeyTestCrd1`, `dsBadKeyTestCrd1`; `onError: continueRegularOutput`); IDs via `$('Node').first().json.id`, the room `$env.TEST_ROOM_ID`, names `$env.TEST_PREFIX`. Nodes that return lists hang off the chain as leaves |
 | `test/automation/setup.ts`         | Needs `DOC_SPACE_BASE_URL`, `DOC_SPACE_USERNAME`, `DOC_SPACE_PASSWORD` (fails without them). Creates an API key (expires in a day) and the room `n8n-tests-<time>`, installs the packed package into a temp n8n folder, imports credentials and workflows. Teardown deletes rooms and webhooks with the prefix, new items in the trash and the key |
 | `test/automation/docspace.ts`      | `docspace(method, path, body)` (Basic auth) to prepare and check state; `finished`, `poll`, `trash` |
@@ -97,8 +97,8 @@ with `ERR_PNPM_IGNORED_BUILDS`). Not `pnpm dev` (separate n8n instance with a sc
 
 ## Manual run
 
-The agent itself only builds, lints and runs unit tests. Starting n8n, changing its setup and sending any request to a DocSpace portal
-happen only after the user confirms (and names the portal). Manual run in the user's WSL n8n:
+The agent itself only builds, lints and runs unit tests. Starting n8n, changing its setup and sending any request to
+a DocSpace portal happen only after the user confirms (and names the portal). Manual run in the user's WSL n8n:
 
 - The repo is linked **unscoped** into `~/.n8n/custom/node_modules/onlyoffice-docspace-n8n` (a scoped
   `@onlyoffice/...` link is not watched). The WSL copy of the repo is separate from the Windows one — sync edits.
@@ -146,10 +146,12 @@ Report in the PR which operations/auth types were run manually and against which
 1. Correctness: endpoint, method and body match DocSpace-server at the linked version; responses read from
    `body.response`; `fileops` endpoints awaited via `docspaceResolveAsyncApiResponse` and their results picked by
    id, not position; `isMyDocuments` branches handled; unit tests cover the change.
-2. Items: helpers and `getNodeParameter` get the item index; `pairedItem`/`itemData` set; `continueOnFail` works.
+2. Items: helpers and `getNodeParameter` get the item index `i` (not a loop counter such as a chunk index);
+   `pairedItem`/`itemData` set; `continueOnFail` works; a unit test with two items checks `itemIndex` of requests.
 3. Auth: works for all four credential types (OAuth2 base URL comes from the token `aud`; OAuth2 scopes cover the new
    endpoint); trigger stays without OAuth2.
-4. Security: no secrets in parameters, output JSON or errors; webhook payloads treated as untrusted.
+4. Security: no secrets in parameters, output JSON or errors; webhook payloads treated as untrusted; the trigger
+   starts a workflow only for a delivery with a valid `x-docspace-signature-256`.
 5. Compatibility: no renamed/removed parameter names, operation values, credential fields, output keys, default
    binary field; access-level values unchanged.
 6. Lint/build clean with no new warnings, `eslint.config.mjs` untouched, lockfile in sync, `version` untouched;

@@ -49,7 +49,8 @@ issue webhook scopes).
 - `docspaceResolveAsyncApiResponse(i, body)` — for `fileops` (copy, move, delete, archive, bulk download): polls
   `GET api/2.0/files/fileops` until every operation has `finished` / `progress === 100`; operation `error`s are joined
   into one `NodeOperationError`. A finished folder copy/move lists the destination folder in `folders` too, in no
-  fixed order — pick results by id / `parentId`, not by position.
+  fixed order — pick results by id / `parentId`, not by position (Copy Folder: `parentId === destFolderId`, Move
+  Folder: `id === folderId`).
 - Always pass the item index `i`; `listSearch` methods use `0`.
 
 ## Node conventions
@@ -78,10 +79,14 @@ issue webhook scopes).
   `file.downloaded`).
 - `webhookMethods.default`: `checkExists` (`GET api/2.0/settings/webhook`, match `configs.id` with static data
   `webhookId`), `create` (`POST` with `uri = getNodeWebhookUrl('default')`, stores `webhookId`), `delete`.
-- Webhooks: `HEAD setup` answers 200 (DocSpace URL check), `POST default` emits the body as one item:
+- Webhooks: `HEAD setup` answers 200 (DocSpace URL check, no body, no signature). `POST default` checks the
+  signature, then emits the body as one item:
   `{ event: { trigger: 'file.created', triggerId, … }, payload: <file/folder/room/user>, webhook: { id, name, url } }`.
 - DocSpace signs every delivery: `x-docspace-signature-256: sha256=<HMAC-SHA256 of the raw body with secretKey, hex
-  upper case>`. It retries a failed delivery 5 times (2^n s), disables the webhook after failures, and deletes it on
+  upper case>`. The trigger computes it over `getRequestObject().rawBody` (never the parsed body) and compares with
+  `timingSafeEqual`; a missing or wrong signature → `401` + `noWebhookResponse`, the workflow does not start. The
+  portal signs with the key it was registered with, so a changed `secretKey` needs a new activation.
+- The portal retries a failed delivery 5 times (2^n s), disables the webhook after failures, and deletes it on
   `410 Gone`. A webhook can also be limited to one object with `targetId`.
 - The portal registers only a public, resolvable URL that answers its `HEAD` check (localhost or a private IP →
   "URL host is in the blacklist"), so activation fails otherwise. Locally use a tunnel and set `N8N_WEBHOOK_URL`

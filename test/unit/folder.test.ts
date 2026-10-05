@@ -104,8 +104,7 @@ describe('folder requests', () => {
 		expect(output[0].json).toEqual(MOVED);
 	});
 
-	// Bug: the portal lists the destination first for a copy, and the node returns folders[0].
-	it.fails('Copy Folder returns the copy, not the destination folder', async () => {
+	it('Copy Folder returns the copy, not the destination folder', async () => {
 		const { output } = await folder(
 			{ operation: 'copyFolder', folderId: 5, destFolderId: 9 },
 			{ 'PUT api/2.0/files/fileops/copy': finished({ folders: [DEST, COPY] }) },

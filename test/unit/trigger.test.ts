@@ -87,33 +87,35 @@ describe('delete', () => {
 
 // ---- Incoming request: a delivery from the portal ----
 
+/** A delivery signed like DocSpace signs it. */
+const signed = (body: IDataObject) => ({
+	webhookName: 'default' as const,
+	body,
+	headers: { 'x-docspace-signature-256': signature(body) },
+});
+
 describe('incoming request', () => {
 	it.each([FILE_CREATED, ROOM_CREATED, USER_INVITED])(
-		'starts the workflow with a $event.trigger delivery as one item, unchanged',
+		'starts the workflow with a signed $event.trigger delivery as one item, unchanged',
 		async (body) => {
-			const { result } = await runWebhook({ webhookName: 'default', body }, PARAMS);
+			const { result } = await runWebhook(signed(body), PARAMS);
 			expect(result).toEqual({ workflowData: [[{ json: body }]] });
 		},
 	);
 
-	it('accepts a delivery signed with the secret key', async () => {
-		const headers = { 'x-docspace-signature-256': signature(FILE_CREATED) };
-		const { result } = await runWebhook(
-			{ webhookName: 'default', body: FILE_CREATED, headers },
-			PARAMS,
-		);
-		expect(result).toEqual({ workflowData: [[{ json: FILE_CREATED }]] });
-	});
-
-	// Bug: the trigger does not check x-docspace-signature-256, so anyone who knows the URL can
-	// start the workflow.
-	it.fails('rejects a delivery with a wrong signature with 401', async () => {
-		const headers = { 'x-docspace-signature-256': signature(FILE_CREATED, 'otherkey') };
+	it.each([
+		['without a signature', {}],
+		[
+			'with a signature of another key',
+			{ 'x-docspace-signature-256': signature(FILE_CREATED, 'otherkey') },
+		],
+	])('rejects a delivery %s with 401 and starts no workflow', async (_kind, headers) => {
 		const { result, response } = await runWebhook(
 			{ webhookName: 'default', body: FILE_CREATED, headers },
 			PARAMS,
 		);
-		expect([result, response.statusCode]).toEqual([{ noWebhookResponse: true }, 401]);
+		expect(result).toEqual({ noWebhookResponse: true });
+		expect(response).toEqual({ statusCode: 401, ended: true });
 	});
 });
 
@@ -127,7 +129,7 @@ describe('webhook response', () => {
 	});
 
 	it('leaves the answer to a delivery to n8n', async () => {
-		const { response } = await runWebhook({ webhookName: 'default', body: FILE_CREATED }, PARAMS);
+		const { response } = await runWebhook(signed(FILE_CREATED), PARAMS);
 		expect(response).toEqual({ statusCode: 0, ended: false });
 	});
 

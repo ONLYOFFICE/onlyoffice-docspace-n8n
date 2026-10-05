@@ -157,7 +157,7 @@ describe('Download File', () => {
 describe('Upload File', () => {
 	const MB = 1024 * 1024;
 
-	/** Upload with a fake chunked uploader that completes after `chunks` chunks. */
+	/** Upload with a fake chunked uploader that completes a file every `chunks` chunks. */
 	async function upload(params: IDataObject, items?: IDataObject[], chunks = 1) {
 		let received = 0;
 		const result = await file(
@@ -165,7 +165,7 @@ describe('Upload File', () => {
 			{
 				'POST api/2.0/files/5/upload/create_session': { data: { id: 's1' } },
 				'POST ChunkedUploader.ashx?uid=s1': () =>
-					++received === chunks ? reply({ data: { id: 7 } }, 201) : reply({ success: true }),
+					++received % chunks === 0 ? reply({ data: { id: 7 } }, 201) : reply({ success: true }),
 				'GET api/2.0/files/file/7': { id: 7, title: 'notes.txt' },
 			},
 			{ items },
@@ -218,6 +218,14 @@ describe('Upload File', () => {
 	it('sends a file over 10 MB in 10 MB chunks', async () => {
 		const { chunksSent } = await upload({ binaryData: true }, [binaryItem(10 * MB + 1)], 2);
 		expect(chunksSent.map((r) => blobOf(r.body!).size)).toEqual([10 * MB, 1]);
+	});
+
+	it('sends the chunks of each item with the credentials of that item', async () => {
+		const { chunksSent } = await upload({ fileName: 'a.txt', fileContent: 'x' }, [
+			{ json: {} },
+			{ json: {} },
+		]);
+		expect(chunksSent.map((r) => r.itemIndex)).toEqual([0, 1]);
 	});
 
 	it('fails without a file name before it calls the portal', async () => {

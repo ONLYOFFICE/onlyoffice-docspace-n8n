@@ -72,6 +72,7 @@ describe('docspaceJsonApiRequest', () => {
 		expect(requests).toEqual([
 			{
 				credentialsType: 'onlyofficeDocspaceApiKeyApi',
+				itemIndex: 0,
 				url: 'api/2.0/x',
 				baseURL: PORTAL,
 				method: 'PUT',

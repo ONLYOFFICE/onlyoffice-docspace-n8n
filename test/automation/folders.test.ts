@@ -42,8 +42,7 @@ describe('Folders', () => {
 		});
 	});
 
-	// Bug: Copy Folder returns the target folder; the portal lists it before the copy.
-	it.fails('Copy Folder puts a new folder into the target', async () => {
+	it('Copy Folder puts a new folder into the target', async () => {
 		const run = await runWorkflow(FOLDERS);
 		const copy = run.json('Copy Folder');
 		expect(copy.id).not.toBe(run.json('Create Folder').id);

@@ -30,6 +30,8 @@ const CREDENTIALS: Record<string, IDataObject> = {
 
 export type Request = IHttpRequestOptions & {
 	credentialsType: string;
+	/** The item the credentials were read for. */
+	itemIndex?: number;
 	headers: IDataObject;
 	qs?: IDataObject;
 	body?: IDataObject & FormData;
@@ -102,6 +104,7 @@ function fakeContext(
 	const values = resolveParameters(properties, { authentication: 'basicAuth', ...options.params });
 	const items: INodeExecutionData[] = options.items ?? [{ json: {} }];
 	const requests: Request[] = [];
+	let itemIndex: number | undefined;
 	const response = { statusCode: 0, ended: false };
 	const { webhookName = 'default', body = {}, headers = {} } = options.delivery ?? {};
 	const context = {
@@ -112,7 +115,10 @@ function fakeContext(
 			parameters: values,
 		}),
 		continueOnFail: () => options.continueOnFail ?? false,
-		getCredentials: async (type: string) => CREDENTIALS[type],
+		getCredentials: async (type: string, index?: number) => {
+			itemIndex = index;
+			return CREDENTIALS[type];
+		},
 		// Execute functions take an item index first, hook functions do not.
 		getNodeParameter: (name: string, ...rest: unknown[]) => {
 			const [fallback, extract] = (kind === 'execute' ? rest.slice(1) : rest) as [
@@ -152,7 +158,7 @@ function fakeContext(
 		}),
 		helpers: {
 			httpRequestWithAuthentication: async (credentialsType: string, request: Request) => {
-				requests.push({ ...request, credentialsType });
+				requests.push({ ...request, credentialsType, itemIndex });
 				const key = `${request.method} ${request.url}`;
 				if (!(key in (options.routes ?? {}))) throw new Error(`Unexpected request ${key}`);
 				const route = options.routes![key];
