@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from 'crypto';
 import type {
 	IHookFunctions,
 	INodeType,
@@ -390,6 +391,20 @@ export class OnlyofficeDocspaceTrigger implements INodeType {
 		if (webhookName === 'setup') {
 			const res = this.getResponseObject();
 			res.status(200).end();
+			return {
+				noWebhookResponse: true,
+			};
+		}
+		// DocSpace signs every delivery with the secret key of the webhook.
+		const secretKey = this.getNodeParameter('secretKey') as string;
+		const hash = createHmac('sha256', secretKey)
+			.update(this.getRequestObject().rawBody)
+			.digest('hex');
+		const expected = Buffer.from(`sha256=${hash.toUpperCase()}`);
+		const signature = Buffer.from(String(this.getHeaderData()['x-docspace-signature-256'] ?? ''));
+		if (signature.length !== expected.length || !timingSafeEqual(signature, expected)) {
+			const res = this.getResponseObject();
+			res.status(401).end();
 			return {
 				noWebhookResponse: true,
 			};
