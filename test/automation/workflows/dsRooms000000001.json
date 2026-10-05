@@ -1,0 +1,255 @@
+{
+	"id": "dsRooms000000001",
+	"name": "ONLYOFFICE DocSpace test: Rooms",
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"nodes": [
+		{
+			"id": "00000000-0000-4000-8000-000000000001",
+			"position": [0, 0],
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"parameters": {}
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000002",
+			"position": [260, 0],
+			"name": "Create Room",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "createRoom",
+				"title": "={{ $env.TEST_PREFIX }} public",
+				"roomType": 6
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000003",
+			"position": [520, 0],
+			"name": "Get Room Info",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "getRoomInfo",
+				"roomId": {
+					"__rl": true,
+					"mode": "manual",
+					"value": "={{ $('Create Room').first().json.id }}"
+				}
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000004",
+			"position": [780, 0],
+			"name": "Update Room",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "updateRoom",
+				"roomId": {
+					"__rl": true,
+					"mode": "manual",
+					"value": "={{ $('Create Room').first().json.id }}"
+				},
+				"title": "={{ $env.TEST_PREFIX }} renamed"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000005",
+			"position": [1040, 0],
+			"name": "Get Room Shared Link",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "getRoomSharedLink",
+				"roomId": {
+					"__rl": true,
+					"mode": "manual",
+					"value": "={{ $('Create Room').first().json.id }}"
+				}
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000006",
+			"position": [1300, 0],
+			"name": "Search Room",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "searchRoom",
+				"query": "={{ $env.TEST_PREFIX }} renamed"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000007",
+			"position": [1560, -100],
+			"name": "Search Room Users",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "searchUser",
+				"roomId": {
+					"__rl": true,
+					"mode": "manual",
+					"value": "={{ $('Create Room').first().json.id }}"
+				}
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000008",
+			"position": [1820, 0],
+			"name": "Archive Room",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "room",
+				"operation": "archiveRoom",
+				"roomId": {
+					"__rl": true,
+					"mode": "manual",
+					"value": "={{ $('Create Room').first().json.id }}"
+				}
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Create Room",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Create Room": {
+			"main": [
+				[
+					{
+						"node": "Get Room Info",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get Room Info": {
+			"main": [
+				[
+					{
+						"node": "Update Room",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Update Room": {
+			"main": [
+				[
+					{
+						"node": "Get Room Shared Link",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get Room Shared Link": {
+			"main": [
+				[
+					{
+						"node": "Search Room",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Search Room": {
+			"main": [
+				[
+					{
+						"node": "Search Room Users",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Archive Room",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"tags": []
+}

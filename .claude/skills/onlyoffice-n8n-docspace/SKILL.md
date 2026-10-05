@@ -21,6 +21,7 @@ call — it is the only API reference in the code.
 | `nodes/OnlyofficeDocspace/GenericFunctions.ts`             | Credential type / base URL resolution, JSON / buffer / form-data requests, async-operation polling |
 | `nodes/OnlyofficeDocspace/OnlyofficeDocspaceTrigger.node.ts` | Webhook registration and receiver                                                     |
 | `credentials/*.credentials.ts`                             | API Key, Basic Auth, OAuth2, Personal Access Token                                      |
+| `test/`                                                     | Unit and automation tests, see onlyoffice-n8n-docspace-development |
 | `docs/`                                                    | User docs: `credentials/`, `app-node/<resource>-operations.md`, `trigger-node/`; linked from credential `documentationUrl` and the codex `*.node.json` (GitHub `master` URLs) |
 
 ## Authentication
@@ -47,7 +48,8 @@ issue webhook scopes).
 - `docspaceFormDataApiRequest(i, url, FormData)` — chunk upload to `ChunkedUploader.ashx?uid=<session>`.
 - `docspaceResolveAsyncApiResponse(i, body)` — for `fileops` (copy, move, delete, archive, bulk download): polls
   `GET api/2.0/files/fileops` until every operation has `finished` / `progress === 100`; operation `error`s are joined
-  into one `NodeOperationError`.
+  into one `NodeOperationError`. A finished folder copy/move lists the destination folder in `folders` too, in no
+  fixed order — pick results by id / `parentId`, not by position.
 - Always pass the item index `i`; `listSearch` methods use `0`.
 
 ## Node conventions
@@ -61,20 +63,29 @@ issue webhook scopes).
 - Each case sets `resultDataObject` (and `resultBinaryData` for downloads); after the switch, undefined result →
   "operation not recognized". Output: JSON via `returnJsonArray` + `constructExecutionMetaData` (arrays become
   several items); binary items keep the **input item's JSON** (file info only when the input JSON is empty) and copy
-  input binaries.
+  input binaries. In a workflow, an operation that returns a list (history, searches) makes the next node run once
+  per entry.
 - Catch: `continueOnFail` → `{ error }`, otherwise **everything** is thrown as `NodeApiError`.
+- Delete File / Delete Folder move the item to the trash of the account; it stays there after its room is deleted.
 - Download: `asText` converts non-txt/csv to txt/csv via `extsConvertible` from `api/2.0/files/settings`; otherwise
   optional `outputFormat`. Upload: binary or text content, `create_session` + 10 MB chunks, success = HTTP 201.
 
 ## Trigger
 
 - Parameters: `name`, `secretKey` (8–30 latin letters), `ssl`, `events` (bit flags; `0` = All Events, otherwise the
-  sum). Events are ordered by bit value, not alphabetically.
+  sum). Events are ordered by bit value, not alphabetically. The portal lists its events with bits in
+  `GET api/2.0/settings/webhook/triggers` (3.7 has bits above 2^31, e.g. `form.submit`, `agent.created`,
+  `file.downloaded`).
 - `webhookMethods.default`: `checkExists` (`GET api/2.0/settings/webhook`, match `configs.id` with static data
   `webhookId`), `create` (`POST` with `uri = getNodeWebhookUrl('default')`, stores `webhookId`), `delete`.
-- Webhooks: `HEAD setup` answers 200 (DocSpace URL check), `POST default` emits the body as items.
-- The DocSpace portal must reach n8n: locally set `WEBHOOK_URL` to a public/tunnel address, otherwise registration
-  succeeds but events never arrive.
+- Webhooks: `HEAD setup` answers 200 (DocSpace URL check), `POST default` emits the body as one item:
+  `{ event: { trigger: 'file.created', triggerId, … }, payload: <file/folder/room/user>, webhook: { id, name, url } }`.
+- DocSpace signs every delivery: `x-docspace-signature-256: sha256=<HMAC-SHA256 of the raw body with secretKey, hex
+  upper case>`. It retries a failed delivery 5 times (2^n s), disables the webhook after failures, and deletes it on
+  `410 Gone`. A webhook can also be limited to one object with `targetId`.
+- The portal registers only a public, resolvable URL that answers its `HEAD` check (localhost or a private IP →
+  "URL host is in the blacklist"), so activation fails otherwise. Locally use a tunnel and set `N8N_WEBHOOK_URL`
+  (n8n 2.x; `WEBHOOK_URL` is deprecated). Deactivation deletes the webhook; stopping n8n leaves it on the portal.
 
 ## Rules and workflows
 

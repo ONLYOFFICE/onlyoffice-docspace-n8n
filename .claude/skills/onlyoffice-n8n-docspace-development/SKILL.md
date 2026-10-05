@@ -2,15 +2,16 @@
 name: onlyoffice-n8n-docspace-development
 description:
   Development rules for the @onlyoffice/n8n-nodes-docspace package - n8n node API conventions used here, the strict
-  n8n-node lint rules, code style, build/lint, running the nodes in a local n8n with hot reload against a DocSpace
-  portal (including webhooks), CI/release, and the review checklist with report format. Use for any TypeScript change
-  in nodes/ or credentials/, for verifying a change, and for reviews.
+  n8n-node lint rules, code style, build/lint, unit and automation tests (real n8n against a test DocSpace portal),
+  running the nodes in a local n8n with hot reload (including webhooks), CI/release, and the review checklist with
+  report format. Use for any TypeScript change in nodes/, credentials/ or test/, for verifying a change, and for
+  reviews.
 ---
 
 # DocSpace package development
 
 Scaffold: `@n8n/node-cli` `0.32.1` (`n8n-node build` / `n8n-node lint`), `n8n.strict: true`, `n8n-workflow` as the only
-peer dependency, no runtime dependencies, **no automated tests**. Types: `node_modules/n8n-workflow/dist/...Interfaces.d.ts`
+peer dependency, no runtime dependencies. Types: `node_modules/n8n-workflow/dist/...Interfaces.d.ts`
 — read them instead of guessing field names.
 
 ## Node API conventions
@@ -58,12 +59,45 @@ Simple English.
 pnpm install --frozen-lockfile   # when node_modules is missing or the lockfile changed
 pnpm build                       # -> dist/ (tsc + copies svg/json)
 pnpm lint                        # must exit 0
+pnpm test                        # unit tests (vitest)
 ```
 
 `mise.toml` pins Node 24.13.0 / pnpm 10.28.1 (Node 22 also builds). Not pnpm 12 (creates `pnpm-workspace.yaml`, fails
 with `ERR_PNPM_IGNORED_BUILDS`). Not `pnpm dev` (separate n8n instance with a scoped link, no hot reload).
 
-The agent itself only builds and lints. Starting n8n, changing its setup and sending any request to a DocSpace portal
+## Tests
+
+| Part                               | What |
+| ---------------------------------- | ---- |
+| `test/unit/*.test.ts`              | Both nodes, `listSearch`, credentials and `GenericFunctions` with a fake n8n context and a fake portal. `trigger.test.ts` follows the webhook lifecycle like n8n core: registration (`checkExists`, `create`, `delete`), the incoming request (body → one item, signature), the response (HEAD 200, `onReceived`) |
+| `test/unit/helpers.ts`             | `runNode({ params, routes, items?, continueOnFail? })` → `{ output, requests }`; `routes` maps `"METHOD url"` to the `response` of the answer or to a function returning the full answer (`reply(body, status)`); `finished()` is a finished `fileops` answer. One fake context serves execute, hook, load-options and webhook functions: `runHook(method, options)`, `runWebhook({ webhookName, body, headers }, params)` → `{ result, response }`, `runListSearch`, `genericContext`. Parameter defaults come from `displayOptions` like in n8n; `authentication` defaults to `basicAuth` |
+| `test/unit/webhook-payloads.ts`    | DocSpace deliveries (`FILE_CREATED`, `ROOM_CREATED`, `USER_INVITED`: `{ event, payload, webhook }`) and `signature(body, secret)` for `x-docspace-signature-256` |
+| `test/automation/workflows/*.json` | One workflow per area (files, upload/download, folders, rooms, users and auth, trigger): a chain of `@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace` nodes (credentials `dsBasicTestCred1`, `dsApiKeyTestCrd1`, `dsBadKeyTestCrd1`; `onError: continueRegularOutput`); IDs via `$('Node').first().json.id`, the room `$env.TEST_ROOM_ID`, names `$env.TEST_PREFIX`. Nodes that return lists hang off the chain as leaves |
+| `test/automation/setup.ts`         | Needs `DOC_SPACE_BASE_URL`, `DOC_SPACE_USERNAME`, `DOC_SPACE_PASSWORD` (fails without them). Creates an API key (expires in a day) and the room `n8n-tests-<time>`, installs the packed package into a temp n8n folder, imports credentials and workflows. Teardown deletes rooms and webhooks with the prefix, new items in the trash and the key |
+| `test/automation/docspace.ts`      | `docspace(method, path, body)` (Basic auth) to prepare and check state; `finished`, `poll`, `trash` |
+| `test/automation/n8n.ts`           | `runWorkflow(id)` (`n8n execute`, cached per file) → `items/json/error/file/fileName(node)`, `json()` throws on an error item; `start()` for long-running processes |
+| `test/automation/trigger.test.ts`  | Cloudflare quick tunnel to `N8N_PORT` (host name from the cloudflared metrics endpoint `/quicktunnel`, like the test containers of n8n) → `n8n publish:workflow` → `n8n start` with `N8N_WEBHOOK_URL` and `N8N_PROXY_HOPS=1`; waits for the webhook on the portal, creates a file, waits for the event in a local collector. The workflow id, `webhookId` and events are read from its JSON |
+| `test/run.sh`, `test/docker.sh`    | `run.sh [unit\|automation]` (both by default): pnpm (`mise.toml`) and `pnpm test`; for automation n8n 2.40.7, cloudflared, `pnpm build`, `pnpm test:automation`. `docker.sh [unit\|automation]` runs it in `node:24-bookworm` like CI and passes `DOC_SPACE_*` through |
+
+- `pnpm test` can always be run. `pnpm test:automation` and `bash test/docker.sh` change a real portal (rooms, files,
+  an API key, a webhook) — only after the user confirms and names a test portal. Its credentials go only into env,
+  never into files, logs or commits.
+- A bug fix comes with a test that fails without the fix. A test that describes a known, unfixed bug is `it.fails`
+  (it starts failing when the bug is fixed and then becomes `it`).
+- One test checks one behavior; table cases go through `it.each`; assertions compare whole objects or exact values.
+- Test files start with a `/* eslint-disable @n8n/community-nodes/no-restricted-imports … -- reason */` header: the
+  community rules lint them too. `vitest.config.mts` is not linted.
+- Automation pitfalls: vitest sets `NODE_ENV=test`, and the n8n CLI then silently does nothing (setup passes
+  `production`); `n8n execute` output is cut off in a pipe (it goes to a file) and has run data only at log level
+  `info`; binaries are in `.n8n/storage`; n8n 2.x imports workflows inactive and `--activeState=fromJson` works
+  only in multi-main/queue mode — a trigger needs `n8n publish:workflow` before `n8n start` (publishing while n8n
+  runs takes effect only after a restart). n8n workflow tests (`NodeTestHarness`) start from a Manual Trigger and
+  cannot cover webhooks; n8n e2e posts to the local `/webhook/...` URL — only our trigger test lets the portal
+  deliver a real event.
+
+## Manual run
+
+The agent itself only builds, lints and runs unit tests. Starting n8n, changing its setup and sending any request to a DocSpace portal
 happen only after the user confirms (and names the portal). Manual run in the user's WSL n8n:
 
 - The repo is linked **unscoped** into `~/.n8n/custom/node_modules/onlyoffice-docspace-n8n` (a scoped
@@ -71,9 +105,9 @@ happen only after the user confirms (and names the portal). Manual run in the us
 - n8n runs with `N8N_DEV_RELOAD=true`, `NODE_ENV=development`, `N8N_SECURE_COOKIE=false` plus `pnpm exec tsc --watch`
   in the repo. Log `Hot reload triggered for CUSTOM` = reloaded; description changes may need a page refresh,
   svg/json changes a restart. Node types: `CUSTOM.onlyofficeDocspace`, `CUSTOM.onlyofficeDocspaceTrigger` (+ `…Tool`).
-- Trigger: the portal must reach n8n — set `WEBHOOK_URL` to a public/tunnel address (zrok, ngrok) or the WSL IP when
-  the portal is in the same network; activate the workflow, check the webhook in DocSpace developer settings, and
-  that deactivation deletes it.
+- Trigger: the portal registers only a public URL that answers its `HEAD` check — set `N8N_WEBHOOK_URL` to a tunnel
+  address (`cloudflared tunnel --url http://localhost:5678`, zrok, ngrok); activate the workflow, check the webhook
+  in DocSpace developer settings, and that deactivation deletes it.
 - Check per touched operation: each affected auth type (API Key is the simplest), one error case with and without
   "Continue On Fail", two input items. Destructive operations only on test data.
 - Changes to the trigger, Download File or Upload File: also run the chain real workflows are built on — Trigger (File
@@ -86,6 +120,13 @@ Report in the PR which operations/auth types were run manually and against which
 - `audit.yml` (push/PR to `master`, `develop`): frozen install, check-licenses, build, lint, then
   `npx @n8n/scan-community-package @onlyoffice/n8n-nodes-docspace` — it scans the **published** npm version, not the
   working tree.
+- `test.yml` (push/PR to `master`, `develop`): jobs `unit` (`bash test/run.sh unit`) and `automation` (`needs: unit`,
+  `bash test/run.sh automation`), like unit and e2e jobs in n8n; both in a `node:24-bookworm` container, the same as
+  `test/docker.sh`. `automation` gets `DOC_SPACE_BASE_URL`, `DOC_SPACE_USERNAME` from Gitea `vars` and
+  `DOC_SPACE_PASSWORD` from `secrets` (the same as onlyoffice-zapier) and needs outbound internet (cloudflared).
+  No `concurrency`: two runs at once share the portal.
+- `paths-ignore` on `test.yml` and `audit.yml`: `**/*.md`, `LICENSE`, `.gitignore`, `.github/**` (plus
+  `.check-licenses.yml` for tests). A push that only changes a workflow does not run it — use `workflow_dispatch`.
 - `stage.yml` (push to `develop` touching `credentials/`, `nodes/`, `package.json`): `pnpm pack` tarball.
 - `master` push changing `package.json` → `create-tag.yml` tags `v<version>` → `release.yml` publishes to npm with
   provenance and creates a GitHub release. Never bump `version` unless the user asks for a release.
@@ -103,8 +144,8 @@ Report in the PR which operations/auth types were run manually and against which
 ## Review checklist
 
 1. Correctness: endpoint, method and body match DocSpace-server at the linked version; responses read from
-   `body.response`; `fileops` endpoints awaited via `docspaceResolveAsyncApiResponse`; `isMyDocuments` branches
-   handled.
+   `body.response`; `fileops` endpoints awaited via `docspaceResolveAsyncApiResponse` and their results picked by
+   id, not position; `isMyDocuments` branches handled; unit tests cover the change.
 2. Items: helpers and `getNodeParameter` get the item index; `pairedItem`/`itemData` set; `continueOnFail` works.
 3. Auth: works for all four credential types (OAuth2 base URL comes from the token `aud`; OAuth2 scopes cover the new
    endpoint); trigger stays without OAuth2.

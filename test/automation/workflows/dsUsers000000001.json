@@ -1,0 +1,200 @@
+{
+	"id": "dsUsers000000001",
+	"name": "ONLYOFFICE DocSpace test: Users and authentication",
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"nodes": [
+		{
+			"id": "00000000-0000-4000-8000-000000000001",
+			"position": [0, 0],
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"parameters": {}
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000002",
+			"position": [260, 0],
+			"name": "Me",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "user",
+				"operation": "getUser",
+				"isMe": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000003",
+			"position": [520, 0],
+			"name": "User By ID",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "user",
+				"operation": "getUser",
+				"userId": {
+					"__rl": true,
+					"mode": "manual",
+					"value": "={{ $('Me').first().json.id }}"
+				}
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000004",
+			"position": [780, 0],
+			"name": "User By Email",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "user",
+				"operation": "getUser",
+				"userEmail": "={{ $('Me').first().json.email }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000005",
+			"position": [1040, -100],
+			"name": "Search Users",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "user",
+				"operation": "searchUser",
+				"query": "={{ $('Me').first().json.email }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000006",
+			"position": [260, 200],
+			"name": "Me With API Key",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "apiKey",
+				"resource": "user",
+				"operation": "getUser",
+				"isMe": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceApiKeyApi": {
+					"id": "dsApiKeyTestCrd1",
+					"name": "DocSpace API Key (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000007",
+			"position": [260, 400],
+			"name": "Me With Wrong API Key",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "apiKey",
+				"resource": "user",
+				"operation": "getUser",
+				"isMe": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceApiKeyApi": {
+					"id": "dsBadKeyTestCrd1",
+					"name": "DocSpace wrong API Key (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Me",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Me With API Key",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Me With Wrong API Key",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Me": {
+			"main": [
+				[
+					{
+						"node": "User By ID",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"User By ID": {
+			"main": [
+				[
+					{
+						"node": "User By Email",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"User By Email": {
+			"main": [
+				[
+					{
+						"node": "Search Users",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"tags": []
+}

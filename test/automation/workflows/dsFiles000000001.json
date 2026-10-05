@@ -1,0 +1,301 @@
+{
+	"id": "dsFiles000000001",
+	"name": "ONLYOFFICE DocSpace test: Files",
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"nodes": [
+		{
+			"id": "00000000-0000-4000-8000-000000000001",
+			"position": [0, 0],
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"parameters": {}
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000002",
+			"position": [260, 0],
+			"name": "Create Target Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "createFolder",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"title": "Target"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000003",
+			"position": [520, 0],
+			"name": "Create File",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "createFile",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"type": "document",
+				"title": "Report"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000004",
+			"position": [780, 0],
+			"name": "Get File Info",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "getFileInfo",
+				"fileId": "={{ $('Create File').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000005",
+			"position": [1040, 0],
+			"name": "Update File",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "updateFile",
+				"fileId": "={{ $('Create File').first().json.id }}",
+				"title": "Renamed.docx"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000006",
+			"position": [1300, 0],
+			"name": "Get File Shared Link",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "getFileSharedLink",
+				"fileId": "={{ $('Create File').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000007",
+			"position": [1560, 0],
+			"name": "Copy File",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "copyFile",
+				"fileId": "={{ $('Create File').first().json.id }}",
+				"destFolderId": "={{ $('Create Target Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000008",
+			"position": [1820, 0],
+			"name": "Move File",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "moveFile",
+				"fileId": "={{ $('Create File').first().json.id }}",
+				"destFolderId": "={{ $('Create Target Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000009",
+			"position": [2080, 0],
+			"name": "Delete File",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "deleteFile",
+				"fileId": "={{ $('Move File').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000010",
+			"position": [260, 200],
+			"name": "Missing File",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "getFileInfo",
+				"fileId": 1
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Create Target Folder",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Missing File",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Create Target Folder": {
+			"main": [
+				[
+					{
+						"node": "Create File",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Create File": {
+			"main": [
+				[
+					{
+						"node": "Get File Info",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get File Info": {
+			"main": [
+				[
+					{
+						"node": "Update File",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Update File": {
+			"main": [
+				[
+					{
+						"node": "Get File Shared Link",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get File Shared Link": {
+			"main": [
+				[
+					{
+						"node": "Copy File",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Copy File": {
+			"main": [
+				[
+					{
+						"node": "Move File",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Move File": {
+			"main": [
+				[
+					{
+						"node": "Delete File",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"tags": []
+}

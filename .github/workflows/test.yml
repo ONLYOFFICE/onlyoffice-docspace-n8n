@@ -1,0 +1,71 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.github/**'
+      - '.check-licenses.yml'
+  push:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.github/**'
+      - '.check-licenses.yml'
+  workflow_dispatch:
+
+# Unit and automation tests are separate jobs, like unit and e2e tests in n8n itself. Both run
+# test/run.sh in the same container as test/docker.sh.
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container: node:24-bookworm
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{hashFiles('pnpm-lock.yaml', 'test/run.sh')}}
+
+      - name: Run Unit Tests
+        run: bash test/run.sh unit
+
+  automation:
+    needs: unit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container: node:24-bookworm
+    timeout-minutes: 45
+    env:
+      # The test portal, the same variables as in onlyoffice-zapier; the automation tests fail without it.
+      DOC_SPACE_BASE_URL: ${{ vars.DOC_SPACE_BASE_URL }}
+      DOC_SPACE_USERNAME: ${{ vars.DOC_SPACE_USERNAME }}
+      DOC_SPACE_PASSWORD: ${{ secrets.DOC_SPACE_PASSWORD }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{hashFiles('pnpm-lock.yaml', 'test/run.sh')}}
+
+      - name: Run Automation Tests
+        run: bash test/run.sh automation
