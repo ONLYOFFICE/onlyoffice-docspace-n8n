@@ -3266,7 +3266,10 @@ export class OnlyofficeDocspace implements INodeType {
 									i,
 									copyResponse.body,
 								);
-								resultDataObject = resolved[0].folders[0];
+								// The finished operation lists the destination folder too.
+								resultDataObject = resolved[0].folders.find(
+									(folder: IDataObject) => folder.parentId === destFolderId,
+								);
 								break;
 							}
 
@@ -3486,7 +3489,10 @@ export class OnlyofficeDocspace implements INodeType {
 									i,
 									moveResponse.body,
 								);
-								resultDataObject = resolved[0].folders[0];
+								// The finished operation lists the destination folder too.
+								resultDataObject = resolved[0].folders.find(
+									(folder: IDataObject) => folder.id === folderId,
+								);
 								break;
 							}
 
