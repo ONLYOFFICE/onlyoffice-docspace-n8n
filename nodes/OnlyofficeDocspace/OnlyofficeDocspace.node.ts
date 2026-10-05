@@ -3183,7 +3183,7 @@ export class OnlyofficeDocspace implements INodeType {
 									formData.append('file', blob, sessionBody.fileName);
 									uploadResponse = await docspaceFormDataApiRequest.call(
 										this,
-										index,
+										i,
 										`ChunkedUploader.ashx?uid=${sessionResponse.body.response.data.id}`,
 										formData,
 									);
