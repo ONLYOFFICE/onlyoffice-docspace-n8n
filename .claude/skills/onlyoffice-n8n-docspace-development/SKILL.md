@@ -77,9 +77,10 @@ with `ERR_PNPM_IGNORED_BUILDS`). Not `pnpm dev` (separate n8n instance with a sc
 | `test/automation/docspace.ts`      | `docspace(method, path, body)` (Basic auth) to prepare and check state; `finished`, `poll`, `trash` |
 | `test/automation/n8n.ts`           | `runWorkflow(id)` (`n8n execute`, cached per file) → `items/json/error/file/fileName(node)`, `json()` throws on an error item; `start()` for long-running processes |
 | `test/automation/trigger.test.ts`  | Cloudflare quick tunnel to `N8N_PORT` (host name from the cloudflared metrics endpoint `/quicktunnel`, like the test containers of n8n) → `n8n publish:workflow` → `n8n start` with `N8N_WEBHOOK_URL` and `N8N_PROXY_HOPS=1`; waits for the webhook on the portal, creates a file, waits for the event in a local collector. The workflow id, `webhookId` and events are read from its JSON |
-| `test/run.sh`, `test/docker.sh`    | `run.sh [unit\|automation]` (both by default): pnpm (`mise.toml`) and `pnpm test`; for automation n8n 2.40.7, cloudflared, `pnpm build`, `pnpm test:automation`. `docker.sh [unit\|automation]` runs it in `node:24-bookworm` like CI and passes `DOC_SPACE_*` through |
+| `test/run.sh`, `test/docker.sh`    | `run.sh [unit\|automation]` (both by default): pnpm (`mise.toml`) and `pnpm test`; for automation n8n 2.40.7, cloudflared, `pnpm build`, `pnpm test:automation`. With `CI` set it runs only `unit`. `docker.sh [unit\|automation]` runs it in `node:24-bookworm` like CI and passes `DOC_SPACE_*` through |
 
-- `pnpm test` can always be run. `pnpm test:automation` and `bash test/docker.sh` change a real portal (rooms, files,
+- `pnpm test` can always be run; it is the only suite in CI. The automation tests (real portal, cloudflared) are
+  local only. `pnpm test:automation` and `bash test/docker.sh` change a real portal (rooms, files,
   an API key, a webhook) — only after the user confirms and names a test portal. Its credentials go only into env,
   never into files, logs or commits.
 - A bug fix comes with a test that fails without the fix. A test that describes a known, unfixed bug is `it.fails`
@@ -120,11 +121,10 @@ Report in the PR which operations/auth types were run manually and against which
 - `audit.yml` (push/PR to `master`, `develop`): frozen install, check-licenses, build, lint, then
   `npx @n8n/scan-community-package @onlyoffice/n8n-nodes-docspace` — it scans the **published** npm version, not the
   working tree.
-- `test.yml` (push/PR to `master`, `develop`): jobs `unit` (`bash test/run.sh unit`) and `automation` (`needs: unit`,
-  `bash test/run.sh automation`), like unit and e2e jobs in n8n; both in a `node:24-bookworm` container, the same as
-  `test/docker.sh`. `automation` gets `DOC_SPACE_BASE_URL`, `DOC_SPACE_USERNAME` from Gitea `vars` and
-  `DOC_SPACE_PASSWORD` from `secrets` (the same as onlyoffice-zapier) and needs outbound internet (cloudflared).
-  No `concurrency`: two runs at once share the portal.
+- `test.yml` (push/PR to `master`, `develop`): one job `unit` (`bash test/run.sh unit`) in a `node:24-bookworm`
+  container, the same as `test/docker.sh`; no services, secrets or internet beyond npm. The automation tests are not
+  in CI: they change a real portal and need a Cloudflare tunnel, so they run only locally (`run.sh` refuses them
+  when `CI` is set). Do not add them back to CI.
 - `paths-ignore` on `test.yml` and `audit.yml`: `**/*.md`, `LICENSE`, `.gitignore`, `.github/**` (plus
   `.check-licenses.yml` for tests). A push that only changes a workflow does not run it — use `workflow_dispatch`.
 - `stage.yml` (push to `develop` touching `credentials/`, `nodes/`, `package.json`): `pnpm pack` tarball.
