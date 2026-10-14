@@ -1,0 +1,252 @@
+{
+	"id": "dsTransfer000001",
+	"name": "ONLYOFFICE DocSpace test: Upload and download",
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"nodes": [
+		{
+			"id": "00000000-0000-4000-8000-000000000001",
+			"position": [0, 0],
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"parameters": {}
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000002",
+			"position": [260, 0],
+			"name": "Upload Text",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "uploadFile",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"fileName": "notes.txt",
+				"fileContent": "Hello from n8n"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000003",
+			"position": [520, 0],
+			"name": "Download Text",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "downloadFile",
+				"fileId": "={{ $('Upload Text').first().json.id }}",
+				"asText": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000004",
+			"position": [780, 0],
+			"name": "Create Document",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "createFile",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"type": "document",
+				"title": "Document"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000005",
+			"position": [1040, 0],
+			"name": "Download DOCX",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "downloadFile",
+				"fileId": "={{ $('Create Document').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000006",
+			"position": [1300, 0],
+			"name": "Upload DOCX",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "uploadFile",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"binaryData": true,
+				"fileName": "Copy.docx"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000007",
+			"position": [1560, 0],
+			"name": "Download PDF",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "downloadFile",
+				"fileId": "={{ $('Create Document').first().json.id }}",
+				"outputFormat": {
+					"__rl": true,
+					"mode": "manual",
+					"value": ".pdf"
+				}
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000008",
+			"position": [1820, 0],
+			"name": "Download Document As Text",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "file",
+				"operation": "downloadFile",
+				"fileId": "={{ $('Create Document').first().json.id }}",
+				"asText": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Upload Text",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Upload Text": {
+			"main": [
+				[
+					{
+						"node": "Download Text",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Download Text": {
+			"main": [
+				[
+					{
+						"node": "Create Document",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Create Document": {
+			"main": [
+				[
+					{
+						"node": "Download DOCX",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Download DOCX": {
+			"main": [
+				[
+					{
+						"node": "Upload DOCX",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Upload DOCX": {
+			"main": [
+				[
+					{
+						"node": "Download PDF",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Download PDF": {
+			"main": [
+				[
+					{
+						"node": "Download Document As Text",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"tags": []
+}

@@ -31,14 +31,17 @@
     "build": "n8n-node build",
     "dev": "n8n-node dev",
     "format": "prettier --write .",
-    "lint": "n8n-node lint"
+    "lint": "n8n-node lint",
+    "test": "vitest run --project unit",
+    "test:automation": "vitest run --project automation"
   },
   "devDependencies": {
     "@n8n/node-cli": "0.32.1",
     "@types/node": "25.0.10",
     "eslint": "9.32.0",
     "prettier": "3.6.2",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "5.0.2"
   },
   "peerDependencies": {
     "n8n-workflow": "*"

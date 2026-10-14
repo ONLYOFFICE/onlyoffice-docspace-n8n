@@ -1,0 +1,388 @@
+{
+	"id": "dsFolders0000001",
+	"name": "ONLYOFFICE DocSpace test: Folders",
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"nodes": [
+		{
+			"id": "00000000-0000-4000-8000-000000000001",
+			"position": [0, 0],
+			"name": "Start",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"parameters": {}
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000002",
+			"position": [260, 0],
+			"name": "Create Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "createFolder",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"title": "Projects"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000003",
+			"position": [520, 0],
+			"name": "Create Target Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "createFolder",
+				"parentId": "={{ $env.TEST_ROOM_ID }}",
+				"title": "Archive"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000004",
+			"position": [780, 0],
+			"name": "Get Folder Info",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "getFolderInfo",
+				"folderId": "={{ $('Create Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000005",
+			"position": [1040, 0],
+			"name": "Update Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "updateFolder",
+				"folderId": "={{ $('Create Folder').first().json.id }}",
+				"title": "Projects 2026"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000006",
+			"position": [1300, 0],
+			"name": "Get Room Contents",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "getFolderContents",
+				"folderId": "={{ $env.TEST_ROOM_ID }}",
+				"query": "Projects 2026"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000007",
+			"position": [1560, -100],
+			"name": "Get Folder History",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "getFolderHistory",
+				"folderId": "={{ $('Create Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000008",
+			"position": [1820, 0],
+			"name": "Get Folder Shared Link",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "getFolderSharedLink",
+				"folderId": "={{ $('Create Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000009",
+			"position": [2080, 0],
+			"name": "Copy Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "copyFolder",
+				"folderId": "={{ $('Create Folder').first().json.id }}",
+				"destFolderId": "={{ $('Create Target Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000010",
+			"position": [2340, 0],
+			"name": "Move Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "moveFolder",
+				"folderId": "={{ $('Create Folder').first().json.id }}",
+				"destFolderId": "={{ $('Create Target Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000011",
+			"position": [2600, 0],
+			"name": "Delete Folder",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "deleteFolder",
+				"folderId": "={{ $('Create Target Folder').first().json.id }}"
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000012",
+			"position": [260, 200],
+			"name": "My Documents Info",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "getFolderInfo",
+				"isMyDocuments": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000013",
+			"position": [520, 200],
+			"name": "My Documents Contents",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspace",
+			"typeVersion": 1,
+			"parameters": {
+				"authentication": "basicAuth",
+				"resource": "folder",
+				"operation": "getFolderContents",
+				"isMyDocuments": true
+			},
+			"credentials": {
+				"onlyofficeDocspaceBasicAuthApi": {
+					"id": "dsBasicTestCred1",
+					"name": "DocSpace Basic Auth (tests)"
+				}
+			},
+			"onError": "continueRegularOutput"
+		}
+	],
+	"connections": {
+		"Start": {
+			"main": [
+				[
+					{
+						"node": "Create Folder",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "My Documents Info",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Create Folder": {
+			"main": [
+				[
+					{
+						"node": "Create Target Folder",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Create Target Folder": {
+			"main": [
+				[
+					{
+						"node": "Get Folder Info",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get Folder Info": {
+			"main": [
+				[
+					{
+						"node": "Update Folder",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Update Folder": {
+			"main": [
+				[
+					{
+						"node": "Get Room Contents",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get Room Contents": {
+			"main": [
+				[
+					{
+						"node": "Get Folder History",
+						"type": "main",
+						"index": 0
+					},
+					{
+						"node": "Get Folder Shared Link",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Get Folder Shared Link": {
+			"main": [
+				[
+					{
+						"node": "Copy Folder",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Copy Folder": {
+			"main": [
+				[
+					{
+						"node": "Move Folder",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Move Folder": {
+			"main": [
+				[
+					{
+						"node": "Delete Folder",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"My Documents Info": {
+			"main": [
+				[
+					{
+						"node": "My Documents Contents",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"tags": []
+}

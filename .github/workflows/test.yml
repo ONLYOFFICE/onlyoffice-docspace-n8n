@@ -1,0 +1,47 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.github/**'
+      - '.check-licenses.yml'
+  push:
+    branches:
+      - master
+      - develop
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.github/**'
+      - '.check-licenses.yml'
+  workflow_dispatch:
+
+# CI runs only the unit tests: they mock the portal and need no services. The automation tests
+# change a real DocSpace portal and need a Cloudflare tunnel, so they run only locally
+# (test/docker.sh automation).
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container: node:24-bookworm
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{hashFiles('pnpm-lock.yaml', 'test/run.sh')}}
+
+      - name: Run Unit Tests
+        run: bash test/run.sh unit

@@ -1,0 +1,59 @@
+{
+	"id": "dsTrigger0000001",
+	"name": "ONLYOFFICE DocSpace test: Trigger",
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"nodes": [
+		{
+			"id": "00000000-0000-4000-8000-000000000001",
+			"position": [0, 0],
+			"name": "File Created",
+			"type": "@onlyoffice/n8n-nodes-docspace.onlyofficeDocspaceTrigger",
+			"typeVersion": 1,
+			"webhookId": "6f7c3c2e-5a43-4c1b-9d3e-0a1b2c3d4e5f",
+			"parameters": {
+				"authentication": "apiKey",
+				"name": "={{ $env.TEST_PREFIX }}",
+				"secretKey": "n8ntestsecret",
+				"events": [128]
+			},
+			"credentials": {
+				"onlyofficeDocspaceApiKeyApi": {
+					"id": "dsApiKeyTestCrd1",
+					"name": "DocSpace API Key (tests)"
+				}
+			}
+		},
+		{
+			"id": "00000000-0000-4000-8000-000000000002",
+			"position": [260, 0],
+			"name": "Collect Event",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"parameters": {
+				"method": "POST",
+				"url": "={{ $env.COLLECTOR_URL }}",
+				"sendBody": true,
+				"specifyBody": "json",
+				"jsonBody": "={{ JSON.stringify($json) }}"
+			}
+		}
+	],
+	"connections": {
+		"File Created": {
+			"main": [
+				[
+					{
+						"node": "Collect Event",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"tags": []
+}
